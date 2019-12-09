@@ -41,6 +41,7 @@ type InternalMsg
     | TimeInputMsg InputElement.Msg
     | ResultMsg ResultElement.Msg
     | CalculatePace
+    | ResetForm
 
 
 type ExternalMsg
@@ -199,6 +200,11 @@ update msg model =
 
                         CalculationError message ->
                             error message
+
+        ResetForm ->
+            ( init
+            , Cmd.none
+            )
 
 
 validate : InputElement.Model -> InputElement.Model -> Validation
@@ -361,9 +367,10 @@ view model =
                             }
                             model.result
                     ]
-            , button =
+            , calculate =
                 { msg = Self CalculatePace
                 , isCalculated = model.isCalculated
                 }
+            , reset = Self ResetForm
             }
         ]

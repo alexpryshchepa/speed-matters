@@ -8,32 +8,39 @@ import Html.Events exposing (..)
 type alias Model msg =
     { form : Html msg
     , result : Html msg
-    , button :
+    , calculate :
         { msg : msg
         , isCalculated : Bool
         }
+    , reset : msg
     }
 
 
 view : Model msg -> Html msg
-view { form, result, button } =
+view { form, result, calculate, reset } =
     div [ class "page-layout" ]
         [ div [ class "page-layout__side page-layout__side-left" ]
             [ form
             , div
-                [ class "page-layout__calculate"
-                , classList [ ( "is-calculated", button.isCalculated ) ]
-                ]
+                [ class "page-layout__buttons" ]
                 [ node "custom-mwc-button"
-                    [ attribute "raised" ""
+                    [ class "page-layout__button"
+                    , attribute "label" "Reset"
+                    , onClick reset
+                    ]
+                    []
+                , node "custom-mwc-button"
+                    [ class "page-layout__button page-layout__button_calculate"
+                    , classList [ ( "is-calculated", calculate.isCalculated ) ]
+                    , attribute "raised" ""
                     , attribute "label"
-                        (if button.isCalculated then
+                        (if calculate.isCalculated then
                             "Calculated"
 
                          else
                             "Calculate"
                         )
-                    , onClick button.msg
+                    , onClick calculate.msg
                     ]
                     []
                 ]

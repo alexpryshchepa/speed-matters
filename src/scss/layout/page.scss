@@ -16,13 +16,21 @@
     }
   }
 
-  &__calculate {
+  &__buttons {
     display: flex;
     justify-content: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
+  }
 
-    &.is-calculated {
-      --mdc-theme-primary: #e9437a;
-      --mdc-theme-on-primary: white;
+  &__button {
+    margin-left: 16px;
+
+    &_calculate {
+      &.is-calculated {
+        --mdc-theme-primary: #e9437a;
+        --mdc-theme-on-primary: white;
+      }
     }
   }
 }
