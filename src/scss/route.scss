@@ -1,0 +1,61 @@
+.route {
+
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 16px;
+  }
+
+  &__link {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    text-decoration: none;
+    color: rgba(#000, .6);
+    transition: color .2s ease-out;
+
+    & > i {
+      margin-right: 12px;
+    }
+
+    &:hover {
+      color: #000;
+    }
+
+    &.is-active {
+      color: #e9437a;
+    }
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+  }
+
+  &__group-title {
+    margin: 0;
+  }
+
+  &__group-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 8px 0;
+  }
+
+  &__divider {
+    height: 1px;
+    background-color: #000;
+  }
+
+  &__content {
+    transition: opacity 0 ease-out;
+    opacity: 0;
+
+    &.is-visible {
+      transition: opacity .4s ease-out;
+      opacity: 1;
+    }
+  }
+}

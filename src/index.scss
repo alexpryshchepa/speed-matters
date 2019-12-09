@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto Condensed', sans-serif;
+  -webkit-overflow-scrolling: touch;
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+// Elements
+@import 'scss/element/input';
+@import 'scss/element/result';
+
+// Sections
+
+// Pages
+@import 'scss/page/home';
+@import 'scss/page/running';
+@import 'scss/page/not-found';
+
+// Layout
+@import 'scss/layout/page';
+
+// Routes
+@import 'scss/route';
+

@@ -1,0 +1,34 @@
+{
+  "author": "Alex Pryshchepa",
+  "name": "speed-matters",
+  "version": "0.1.0",
+  "description": "Sports calculator",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "start": "elm-app start --no-browser",
+    "build": "elm-app build",
+    "test": "elm-app test"
+  },
+  "devDependencies": {
+    "css-loader": "^3.2.1",
+    "node-sass": "^4.13.0",
+    "sass-loader": "^8.0.0",
+    "style-loader": "^1.0.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.7.6",
+    "@material/mwc-button": "^0.11.1",
+    "@material/mwc-drawer": "^0.11.1",
+    "@material/mwc-fab": "^0.10.0",
+    "@material/mwc-formfield": "^0.11.1",
+    "@material/mwc-icon-button": "^0.10.0",
+    "@material/mwc-radio": "^0.11.1",
+    "@material/mwc-snackbar": "^0.11.1",
+    "@material/mwc-textfield": "^0.10.0",
+    "@material/mwc-top-app-bar-fixed": "^0.11.1",
+    "@webcomponents/webcomponentsjs": "^2.4.0"
+  }
+}

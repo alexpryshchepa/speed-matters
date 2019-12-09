@@ -1,0 +1,28 @@
+.page-layout {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 12px 24px;
+
+  &__side {
+    padding: 12px;
+
+    &-left {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    &-right {
+      flex: 1;
+    }
+  }
+
+  &__calculate {
+    display: flex;
+    justify-content: flex-end;
+
+    &.is-calculated {
+      --mdc-theme-primary: #e9437a;
+      --mdc-theme-on-primary: white;
+    }
+  }
+}
