@@ -10,7 +10,8 @@
   "scripts": {
     "start": "elm-app start --no-browser",
     "build": "elm-app build",
-    "test": "elm-app test"
+    "test": "elm-app test",
+    "netlify": "npm i create-elm-app -g & npm run build"
   },
   "devDependencies": {
     "css-loader": "^3.2.1",
