@@ -49,8 +49,8 @@ Run tests with [node-test-runner](https://github.com/rtfeldman/node-test-runner/
 ## Styleguide & Project structure
 
 All files except indexes files should be placed in filename related folders.
-The project uses [BEM](https://en.bem.info/methodology/) approach to write CSS.
-So if we created Elm file with markup that needs be styled we need to create
+The project uses [BEM](https://en.bem.info/methodology/) approach to writing CSS.
+So if Elm file with markup that needs to be styled was created we need to create
 Scss file inside folder that mirroring Elm related file path e.g.
 
 ```
@@ -58,7 +58,7 @@ src/Elm/Page/Home.elm
 src/scss/page/home.scss
 ```
 
-This structure speeds up the code search and prevent from needs to change the code in several places.
+This structure speeds up code search and prevents it from needs to change code in several places.
 
 ### `Elm`
 
