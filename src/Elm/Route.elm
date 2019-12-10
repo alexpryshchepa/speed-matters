@@ -305,7 +305,7 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
             ]
         , div
             [ attribute "slot" "appContent"
-            , class "route__page"
+            , class "route__wrapper"
             ]
             [ node "mwc-top-app-bar-fixed"
                 []
@@ -330,10 +330,12 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                     [ text title ]
                 ]
             , div
-                [ class "route__content"
-                , classList [ ( "is-visible", visible ) ]
-                ]
-                [ pageHtml
+                [ class "route__content" ]
+                [ div
+                    [ class " route__page"
+                    , classList [ ( "is-visible", visible ) ]
+                    ]
+                    [ pageHtml ]
                 , node
                     "custom-mwc-snackbar"
                     [ attribute "timeoutMs" "4000"
@@ -342,6 +344,29 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                     , on "MDCSnackbar:closed" (Decode.succeed <| Self HideSnackbar)
                     ]
                     []
+                , footer [ class "route__footer" ]
+                    [ text "Copyright © 2019 Alex Pryshchepa. All right reserved."
+                    , text " "
+                    , span []
+                        [ text "Icons made by"
+                        , text " "
+                        , a
+                            [ href "https://www.flaticon.com/authors/freepik"
+                            , attribute "title" "Freepik"
+                            , target "_blank"
+                            ]
+                            [ text "Freepik" ]
+                        , text " "
+                        , text "from"
+                        , text " "
+                        , a
+                            [ href "https://www.flaticon.com/"
+                            , attribute "title" "Flaticon"
+                            , target "_blank"
+                            ]
+                            [ text "www.flaticon.com" ]
+                        ]
+                    ]
                 ]
             ]
         ]
