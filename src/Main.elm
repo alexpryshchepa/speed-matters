@@ -8,9 +8,11 @@ module Main exposing
     )
 
 import Browser
+import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Elm.Route as Route
 import Html exposing (..)
+import Task
 import Url
 
 
@@ -22,7 +24,8 @@ type alias Model =
 
 
 type Msg
-    = LinkClicked Browser.UrlRequest
+    = NoOp
+    | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | RouteMsg Route.Msg
 
@@ -44,6 +47,11 @@ init _ url key =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model
+            , Cmd.none
+            )
+
         LinkClicked urlRequest ->
             case urlRequest of
                 Browser.Internal url ->
@@ -65,7 +73,10 @@ update msg model =
                 | url = url
                 , route = routeModel
               }
-            , Cmd.map RouteMsg routeCmd
+            , Cmd.batch
+                [ Cmd.map RouteMsg routeCmd
+                , resetViewport
+                ]
             )
 
         RouteMsg (Route.Self subMsg) ->
@@ -83,6 +94,11 @@ update msg model =
                 Route.ChangePage url ->
                     Nav.pushUrl model.key url
             )
+
+
+resetViewport : Cmd Msg
+resetViewport =
+    Task.perform (\_ -> NoOp) (Dom.setViewport 0 0)
 
 
 view : Model -> Browser.Document Msg
