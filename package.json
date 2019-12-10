@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.6",
+    "@material/card": "^4.0.0",
     "@material/mwc-button": "^0.11.1",
     "@material/mwc-drawer": "^0.11.1",
     "@material/mwc-fab": "^0.10.0",
@@ -30,6 +31,7 @@
     "@material/mwc-snackbar": "^0.11.1",
     "@material/mwc-textfield": "^0.10.0",
     "@material/mwc-top-app-bar-fixed": "^0.11.1",
+    "@material/typography": "^4.0.0",
     "@webcomponents/webcomponentsjs": "^2.4.0",
     "normalize.css": "^8.0.1"
   }

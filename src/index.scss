@@ -15,6 +15,9 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+// Material components
+@import '@material/card/mdc-card';
+@import '@material/typography/mdc-typography';
 @import 'scss/mwc';
 
 // Elements

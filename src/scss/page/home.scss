@@ -1,3 +1,57 @@
 .home-page {
-  
+  padding: 24px;
+
+  @include mobile {
+    padding: 12px;
+  }
+
+  &__heading {
+    padding: 12px;
+  }
+
+  &__cards {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  &__card {
+    width: calc(25% - 24px);
+    min-width: 280px;
+    max-width: 360px;
+    margin: 12px;
+
+    @include mobile {
+      min-width: 0;
+      max-width: 280px;
+      width: 100%;
+    }
+  }
+
+  &__card-media {
+    background-color: $primary-light-color;
+    background-size: 86%;
+  }
+
+  &__card-content {
+    padding: 8px 20px;
+    
+  }
+
+  &__card-title {
+    margin-top: 0;
+    margin-bottom: 4px;
+  }
+
+  &__card-text {
+    margin: 0;
+  }
+
+  &__card-buttons {
+    flex-wrap: wrap;
+  }
+
+  &__card-link {
+    text-decoration: none;
+  }
 }
