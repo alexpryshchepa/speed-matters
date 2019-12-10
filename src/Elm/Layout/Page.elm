@@ -13,11 +13,12 @@ type alias Model msg =
         , isCalculated : Bool
         }
     , reset : msg
+    , link : String
     }
 
 
 view : Model msg -> Html msg
-view { form, result, calculate, reset } =
+view { form, result, calculate, reset, link } =
     div [ class "page-layout" ]
         [ div [ class "page-layout__side page-layout__side-left" ]
             [ form
@@ -47,5 +48,10 @@ view { form, result, calculate, reset } =
             , result
             ]
         , div [ class "page-layout__side page-layout__side-right" ]
-            []
+            [ iframe
+                [ class "page-layout__iframe"
+                , src link
+                ]
+                []
+            ]
         ]

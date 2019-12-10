@@ -372,5 +372,6 @@ view model =
                 , isCalculated = model.isCalculated
                 }
             , reset = Self ResetForm
+            , link = "https://en.wikipedia.org/wiki/Pace_(speed)"
             }
         ]

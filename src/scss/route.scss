@@ -1,5 +1,11 @@
 .route {
 
+  &__page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
   &__menu {
     display: flex;
     flex-direction: column;
@@ -10,8 +16,9 @@
     display: flex;
     align-items: center;
     margin: 8px 0;
+    font-weight: $thin-font-weight;
     text-decoration: none;
-    color: rgba(#000, .6);
+    color: $secondary-text-color;
     transition: color .2s ease-out;
 
     & > i {
@@ -19,11 +26,12 @@
     }
 
     &:hover {
-      color: #000;
+      color: $primary-text-color;
     }
 
     &.is-active {
-      color: #e9437a;
+      color: $accent-color;
+      font-weight: $regular-font-weight;
     }
   }
 
@@ -35,6 +43,7 @@
 
   &__group-title {
     margin: 0;
+    color: $primary-text-color;
   }
 
   &__group-links {
@@ -46,10 +55,13 @@
 
   &__divider {
     height: 1px;
-    background-color: #000;
+    background-color: $divider-color;
   }
 
   &__content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     transition: opacity 0 ease-out;
     opacity: 0;
 

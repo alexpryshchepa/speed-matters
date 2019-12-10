@@ -1,0 +1,17 @@
+mwc-button,
+custom-mwc-button {
+  --mdc-theme-primary: #{$primary-dark-color};
+}
+
+mwc-top-app-bar-fixed {
+  --mdc-theme-primary: #{$primary-dark-color};
+}
+
+mwc-radio {
+  --mdc-theme-secondary: #{$accent-color};
+}
+
+mwc-textfield,
+custom-mwc-textfield {
+  --mdc-theme-primary: #{$primary-dark-color};
+}

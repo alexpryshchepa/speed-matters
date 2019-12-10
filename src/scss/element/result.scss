@@ -8,6 +8,8 @@
 
   &__title {
     margin: 0 0 12px;
+    color: $primary-text-color;
+    font-weight: $thin-font-weight;
   }
 
   &__scroller {
@@ -24,11 +26,12 @@
   }
 
   &__value {
-    color: #e9437a;
+    color: $primary-dark-color;
+    font-weight: $bold-font-weight;
   }
 
   &__shortcut {
-    font-weight: normal;
+    font-weight: $thin-font-weight;
     font-size: 1.5rem;
   }
 }

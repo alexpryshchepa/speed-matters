@@ -1,18 +1,33 @@
 .page-layout {
+  flex: 1;
   display: flex;
   flex-wrap: wrap;
   padding: 12px 24px;
+
+  @include tablet {
+    justify-content: center;
+  }
+
+  @include mobile {
+    padding: 8px;
+  }
 
   &__side {
     padding: 12px;
 
     &-left {
       width: 100%;
-      max-width: 500px;
+      max-width: 468px;
     }
 
     &-right {
       flex: 1;
+      padding-top: 36px;
+      padding-bottom: 36px;
+
+      @include tablet {
+        display: none;
+      }
     }
   }
 
@@ -28,9 +43,13 @@
 
     &_calculate {
       &.is-calculated {
-        --mdc-theme-primary: #e9437a;
-        --mdc-theme-on-primary: white;
+        --mdc-theme-primary: #{$accent-color};
       }
     }
+  }
+
+  &__iframe {
+    width: 100%;
+    height: 100%;
   }
 }

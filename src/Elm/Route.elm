@@ -303,11 +303,15 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                     ]
                 ]
             ]
-        , div [ attribute "slot" "appContent" ]
+        , div
+            [ attribute "slot" "appContent"
+            , class "route__page"
+            ]
             [ node "mwc-top-app-bar-fixed"
                 []
                 [ node "mwc-icon-button"
-                    [ attribute "slot" "navigationIcon"
+                    [ class "route__top-bar"
+                    , attribute "slot" "navigationIcon"
                     , attribute "icon" "menu"
                     , onClick <| Self OpenNav
                     ]

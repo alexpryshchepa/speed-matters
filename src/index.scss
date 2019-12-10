@@ -1,14 +1,21 @@
+@import 'scss/variables';
+@import 'scss/mixins';
+@import '~normalize.css';
+
+// Global
 * {
   box-sizing: border-box;
 }
 
 body {
   margin: 0;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: $primary-font;
   -webkit-overflow-scrolling: touch;
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
 }
+
+@import 'scss/mwc';
 
 // Elements
 @import 'scss/element/input';
@@ -18,7 +25,7 @@ body {
 
 // Pages
 @import 'scss/page/home';
-@import 'scss/page/running';
+@import 'scss/page/running-pace';
 @import 'scss/page/not-found';
 
 // Layout
