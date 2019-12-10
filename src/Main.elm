@@ -8,11 +8,10 @@ module Main exposing
     )
 
 import Browser
-import Browser.Dom as Dom
 import Browser.Navigation as Nav
 import Elm.Route as Route
+import Elm.Util.Dom as DomUtil
 import Html exposing (..)
-import Task
 import Url
 
 
@@ -75,7 +74,7 @@ update msg model =
               }
             , Cmd.batch
                 [ Cmd.map RouteMsg routeCmd
-                , resetViewport
+                , DomUtil.resetViewport NoOp
                 ]
             )
 
@@ -94,11 +93,6 @@ update msg model =
                 Route.ChangePage url ->
                     Nav.pushUrl model.key url
             )
-
-
-resetViewport : Cmd Msg
-resetViewport =
-    Task.perform (\_ -> NoOp) (Dom.setViewport 0 0)
 
 
 view : Model -> Browser.Document Msg

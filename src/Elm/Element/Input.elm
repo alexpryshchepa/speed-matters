@@ -7,7 +7,6 @@ module Elm.Element.Input exposing
     , view
     )
 
-import Elm.Port as Port
 import Elm.Service.Unit as UnitService
 import Elm.Service.Validator as ValidatorService
 import Elm.Util.Cmd as CmdUtil
@@ -39,6 +38,7 @@ type InternalMsg
 
 type ExternalMsg
     = ShowSnackbar String
+    | ValueChanged String String
 
 
 type alias Settings =
@@ -77,8 +77,12 @@ update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         ChangeValue value ->
-            ( { model | value = String.trim value }
-            , Cmd.none
+            let
+                trimmed =
+                    String.trim value
+            in
+            ( { model | value = trimmed }
+            , CmdUtil.fire <| Parent (ValueChanged model.value trimmed)
             )
 
         ChangeUnit unit ->

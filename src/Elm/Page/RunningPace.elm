@@ -10,7 +10,6 @@ module Elm.Page.RunningPace exposing
 import Elm.Element.Input as InputElement
 import Elm.Element.Result as ResultElement
 import Elm.Layout.Page as PageLayout
-import Elm.Port as Port
 import Elm.Service.Calculator as CalculatorService
 import Elm.Service.Converter as ConverterService
 import Elm.Service.Unit as UnitService
@@ -36,8 +35,7 @@ type Msg
 
 
 type InternalMsg
-    = NoOp
-    | DistanceInputMsg InputElement.Msg
+    = DistanceInputMsg InputElement.Msg
     | TimeInputMsg InputElement.Msg
     | ResultMsg ResultElement.Msg
     | CalculatePace
@@ -73,71 +71,64 @@ init =
 
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        clearResult =
+            CmdUtil.fire <| (Self << ResultMsg) (ResultElement.Self ResultElement.ClearValue)
+    in
     case msg of
-        NoOp ->
-            ( model
-            , Cmd.none
-            )
-
         DistanceInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
                     InputElement.update subMsg model.distanceInput
             in
-            ( { model
-                | distanceInput = updatedModel
-                , isCalculated =
-                    if model.isCalculated then
-                        model.distanceInput.value == updatedModel.value
-
-                    else
-                        False
-              }
-            , Cmd.batch
-                [ Cmd.map (Self << DistanceInputMsg) cmd
-                , if model.isCalculated && model.distanceInput.value /= updatedModel.value then
-                    CmdUtil.fire <| (Self << ResultMsg) (ResultElement.Self ResultElement.ClearValue)
-
-                  else
-                    Cmd.none
-                ]
+            ( { model | distanceInput = updatedModel }
+            , Cmd.map (Self << DistanceInputMsg) cmd
             )
 
         DistanceInputMsg (InputElement.Parent subMsg) ->
-            ( model
-            , case subMsg of
+            case subMsg of
                 InputElement.ShowSnackbar message ->
-                    CmdUtil.fire <| (Parent << ShowSnackbar) message
-            )
+                    ( model
+                    , CmdUtil.fire <| (Parent << ShowSnackbar) message
+                    )
+
+                InputElement.ValueChanged old new ->
+                    if model.isCalculated then
+                        ( { model | isCalculated = False }
+                        , clearResult
+                        )
+
+                    else
+                        ( model
+                        , Cmd.none
+                        )
 
         TimeInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
                     InputElement.update subMsg model.timeInput
             in
-            ( { model
-                | timeInput = updatedModel
-                , isCalculated =
+            ( { model | timeInput = updatedModel }
+            , Cmd.map (Self << TimeInputMsg) cmd
+            )
+
+        TimeInputMsg (InputElement.Parent subMsg) ->
+            case subMsg of
+                InputElement.ValueChanged old new ->
                     if model.isCalculated then
-                        model.timeInput.value == updatedModel.value
+                        ( { model | isCalculated = False }
+                        , clearResult
+                        )
 
                     else
-                        False
-              }
-            , Cmd.batch
-                [ Cmd.map (Self << TimeInputMsg) cmd
-                , if model.isCalculated && model.timeInput.value /= updatedModel.value then
-                    CmdUtil.fire <| (Self << ResultMsg) (ResultElement.Self ResultElement.ClearValue)
+                        ( model
+                        , Cmd.none
+                        )
 
-                  else
-                    Cmd.none
-                ]
-            )
-
-        TimeInputMsg (InputElement.Parent _) ->
-            ( model
-            , Cmd.none
-            )
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
 
         ResultMsg (ResultElement.Self subMsg) ->
             let
@@ -165,7 +156,7 @@ update msg model =
                     ( model
                     , Cmd.batch
                         [ CmdUtil.fire ((Parent << ShowSnackbar) message)
-                        , CmdUtil.fire <| (Self << ResultMsg) (ResultElement.Self ResultElement.ClearValue)
+                        , clearResult
                         ]
                     )
 
