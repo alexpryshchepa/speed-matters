@@ -22,6 +22,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Decode
 import Json.Encode as Encode
+import Process
 import Task
 
 
@@ -45,6 +46,7 @@ type InternalMsg
     | CalculatePace
     | ResetForm
     | LocalStorageResponse Encode.Value
+    | GetFromLocalStorage
 
 
 type ExternalMsg
@@ -107,7 +109,8 @@ init =
             ResultElement.init <| UnitService.Pace UnitService.PerKilometer
       , isCalculated = False
       }
-    , Port.getFromLocalStorage db
+      -- FIXME
+    , Process.sleep 100 |> Task.perform (\_ -> Self GetFromLocalStorage)
     )
 
 
@@ -327,6 +330,11 @@ update msg model =
                     ( model
                     , Cmd.none
                     )
+
+        GetFromLocalStorage ->
+            ( model
+            , Port.getFromLocalStorage db
+            )
 
 
 validate : InputElement.Model -> InputElement.Model -> Validation
