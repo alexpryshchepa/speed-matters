@@ -1,4 +1,16 @@
-port module Elm.Port exposing (..)
+port module Elm.Port exposing
+    ( getFromLocalStorage
+    , responseFromLocalStorage
+    , saveToLocalStorage
+    )
+
+import Json.Encode as Encode
 
 
-port toJs : () -> Cmd msg
+port saveToLocalStorage : ( String, Encode.Value ) -> Cmd msg
+
+
+port getFromLocalStorage : String -> Cmd msg
+
+
+port responseFromLocalStorage : (Encode.Value -> msg) -> Sub msg

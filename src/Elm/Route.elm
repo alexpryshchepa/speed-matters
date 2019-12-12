@@ -4,6 +4,7 @@ module Elm.Route exposing
     , Msg(..)
     , Route(..)
     , init
+    , subscriptions
     , update
     , view
     )
@@ -68,6 +69,9 @@ init url =
     let
         route =
             UrlParser.parse parser url |> Maybe.withDefault NotFound
+
+        ( runningPaceModel, runningPaceCmd ) =
+            RunningPacePage.init
     in
     ( { nav = False
       , return = route /= Home
@@ -80,11 +84,19 @@ init url =
                     HomeModel HomePage.init
 
                 RunningPace ->
-                    RunningPaceModel RunningPacePage.init
+                    RunningPaceModel runningPaceModel
       , snackbar = ( "false", "" )
       , visible = False
       }
-    , Process.sleep 100 |> Task.perform (\_ -> Self ShowContent)
+    , Cmd.batch
+        [ Process.sleep 100 |> Task.perform (\_ -> Self ShowContent)
+        , case route of
+            RunningPace ->
+                Cmd.map (Self << RunningPaceMsg) runningPaceCmd
+
+            _ ->
+                Cmd.none
+        ]
     )
 
 
@@ -185,6 +197,16 @@ routeFromContent content =
 
         RunningPaceModel _ ->
             RunningPace
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    case model.content of
+        RunningPaceModel content ->
+            Sub.map (Self << RunningPaceMsg) (RunningPacePage.subscriptions content)
+
+        _ ->
+            Sub.none
 
 
 view : Model -> { title : String, body : Html Msg }

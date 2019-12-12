@@ -107,8 +107,8 @@ view model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions _ =
-    Sub.none
+subscriptions model =
+    Sub.map RouteMsg (Route.subscriptions model.route)
 
 
 main : Program () Model Msg

@@ -1,6 +1,5 @@
 module Elm.Element.Result exposing
     ( ExternalMsg(..)
-    , InternalMsg(..)
     , Model
     , Msg(..)
     , init
@@ -27,9 +26,7 @@ type Msg
 
 
 type InternalMsg
-    = SetValue String
-    | ChangeUnit UnitService.Unit
-    | ClearValue
+    = ChangeUnit UnitService.Unit
 
 
 type ExternalMsg
@@ -59,19 +56,9 @@ init unit =
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        SetValue value ->
-            ( { model | value = String.trim value }
-            , Cmd.none
-            )
-
         ChangeUnit unit ->
             ( { model | unit = unit }
             , CmdUtil.fire (Parent UnitChanged)
-            )
-
-        ClearValue ->
-            ( { model | value = "..." }
-            , Cmd.none
             )
 
 

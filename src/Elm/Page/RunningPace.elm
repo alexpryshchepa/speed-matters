@@ -3,6 +3,7 @@ module Elm.Page.RunningPace exposing
     , Model
     , Msg(..)
     , init
+    , subscriptions
     , update
     , view
     )
@@ -10,6 +11,7 @@ module Elm.Page.RunningPace exposing
 import Elm.Element.Input as InputElement
 import Elm.Element.Result as ResultElement
 import Elm.Layout.Page as PageLayout
+import Elm.Port as Port
 import Elm.Service.Calculator as CalculatorService
 import Elm.Service.Converter as ConverterService
 import Elm.Service.Unit as UnitService
@@ -18,12 +20,14 @@ import Elm.Util.Cmd as CmdUtil
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as Decode
+import Json.Encode as Encode
 import Task
 
 
 type alias Model =
-    { distanceInput : InputElement.Model
-    , timeInput : InputElement.Model
+    { distance : InputElement.Model
+    , time : InputElement.Model
     , result : ResultElement.Model
     , isCalculated : Bool
     }
@@ -40,6 +44,7 @@ type InternalMsg
     | ResultMsg ResultElement.Msg
     | CalculatePace
     | ResetForm
+    | LocalStorageResponse Encode.Value
 
 
 type ExternalMsg
@@ -57,31 +62,88 @@ type Calculation
     | CalculationSuccess Int
 
 
-init : Model
-init =
-    { distanceInput =
-        InputElement.init <| UnitService.Distance UnitService.Kilometer
-    , timeInput =
-        InputElement.init UnitService.Time
-    , result =
-        ResultElement.init <| UnitService.Pace UnitService.PerKilometer
-    , isCalculated = False
+type alias Storage =
+    { distance : String
+    , distanceUnit : Int
+    , time : String
+    , resultUnit : Int
+    , isCalculated : Bool
     }
+
+
+db : String
+db =
+    "running-pace"
+
+
+storageEncoder : Storage -> Encode.Value
+storageEncoder storage =
+    Encode.object
+        [ ( "distance", Encode.string storage.distance )
+        , ( "distanceUnit", Encode.int storage.distanceUnit )
+        , ( "time", Encode.string storage.time )
+        , ( "resultUnit", Encode.int storage.resultUnit )
+        , ( "isCalculated", Encode.bool storage.isCalculated )
+        ]
+
+
+storageDecoder : Decode.Decoder Storage
+storageDecoder =
+    Decode.map5 Storage
+        (Decode.at [ "distance" ] Decode.string)
+        (Decode.at [ "distanceUnit" ] Decode.int)
+        (Decode.at [ "time" ] Decode.string)
+        (Decode.at [ "resultUnit" ] Decode.int)
+        (Decode.at [ "isCalculated" ] Decode.bool)
+
+
+init : ( Model, Cmd Msg )
+init =
+    ( { distance =
+            InputElement.init <| UnitService.Distance UnitService.Kilometer
+      , time =
+            InputElement.init UnitService.Time
+      , result =
+            ResultElement.init <| UnitService.Pace UnitService.PerKilometer
+      , isCalculated = False
+      }
+    , Port.getFromLocalStorage db
+    )
+
+
+setInputValue : String -> InputElement.Model -> InputElement.Model
+setInputValue value model =
+    { model | value = value }
+
+
+setInputUnit : UnitService.Unit -> InputElement.Model -> InputElement.Model
+setInputUnit unit model =
+    { model | unit = unit }
+
+
+setResultValue : String -> ResultElement.Model -> ResultElement.Model
+setResultValue value model =
+    { model | value = value }
+
+
+setResultUnit : UnitService.Unit -> ResultElement.Model -> ResultElement.Model
+setResultUnit unit model =
+    { model | unit = unit }
 
 
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         clearResult =
-            CmdUtil.fire <| (Self << ResultMsg) (ResultElement.Self ResultElement.ClearValue)
+            setResultValue "..." model.result
     in
     case msg of
         DistanceInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
-                    InputElement.update subMsg model.distanceInput
+                    InputElement.update subMsg model.distance
             in
-            ( { model | distanceInput = updatedModel }
+            ( { model | distance = updatedModel }
             , Cmd.map (Self << DistanceInputMsg) cmd
             )
 
@@ -94,8 +156,11 @@ update msg model =
 
                 InputElement.ValueChanged old new ->
                     if model.isCalculated then
-                        ( { model | isCalculated = False }
-                        , clearResult
+                        ( { model
+                            | isCalculated = False
+                            , result = clearResult
+                          }
+                        , Cmd.none
                         )
 
                     else
@@ -106,9 +171,9 @@ update msg model =
         TimeInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
-                    InputElement.update subMsg model.timeInput
+                    InputElement.update subMsg model.time
             in
-            ( { model | timeInput = updatedModel }
+            ( { model | time = updatedModel }
             , Cmd.map (Self << TimeInputMsg) cmd
             )
 
@@ -116,8 +181,11 @@ update msg model =
             case subMsg of
                 InputElement.ValueChanged old new ->
                     if model.isCalculated then
-                        ( { model | isCalculated = False }
-                        , clearResult
+                        ( { model
+                            | isCalculated = False
+                            , result = clearResult
+                          }
+                        , Cmd.none
                         )
 
                     else
@@ -144,7 +212,7 @@ update msg model =
             , case subMsg of
                 ResultElement.UnitChanged ->
                     if model.isCalculated then
-                        CmdUtil.fire (Self CalculatePace)
+                        CmdUtil.fire <| Self CalculatePace
 
                     else
                         Cmd.none
@@ -153,28 +221,37 @@ update msg model =
         CalculatePace ->
             let
                 error message =
-                    ( model
-                    , Cmd.batch
-                        [ CmdUtil.fire ((Parent << ShowSnackbar) message)
-                        , clearResult
-                        ]
+                    ( { model
+                        | result = clearResult
+                      }
+                    , CmdUtil.fire <| (Parent << ShowSnackbar) message
                     )
 
                 success int =
-                    ( { model | isCalculated = True }
+                    ( { model
+                        | isCalculated = True
+                        , result =
+                            setResultValue
+                                (ConverterService.secToPace int)
+                                model.result
+                      }
                     , Cmd.batch
                         [ CmdUtil.fire (Parent HideSnackbar)
-                        , CmdUtil.fire
-                            (int
-                                |> ConverterService.secToPace
-                                |> (ResultElement.Self << ResultElement.SetValue)
-                                |> (Self << ResultMsg)
+                        , Port.saveToLocalStorage
+                            ( db
+                            , storageEncoder
+                                { distance = model.distance.value
+                                , distanceUnit = UnitService.toId model.distance.unit
+                                , time = model.time.value
+                                , resultUnit = UnitService.toId model.result.unit
+                                , isCalculated = True
+                                }
                             )
                         ]
                     )
 
                 validation =
-                    validate model.distanceInput model.timeInput
+                    validate model.distance model.time
             in
             case validation of
                 ValidationError message ->
@@ -183,7 +260,7 @@ update msg model =
                 ValidationSuccess ->
                     let
                         calculation =
-                            calculate model.distanceInput model.timeInput model.result
+                            calculate model.distance model.time model.result
                     in
                     case calculation of
                         CalculationSuccess sec ->
@@ -193,9 +270,63 @@ update msg model =
                             error message
 
         ResetForm ->
-            ( init
-            , Cmd.none
+            ( { model
+                | distance = setInputValue "" model.distance
+                , time = setInputValue "" model.time
+                , result = setResultValue "..." model.result
+                , isCalculated = False
+              }
+            , Port.saveToLocalStorage
+                ( db
+                , storageEncoder
+                    { distance = ""
+                    , distanceUnit = UnitService.toId model.distance.unit
+                    , time = ""
+                    , resultUnit = UnitService.toId model.result.unit
+                    , isCalculated = False
+                    }
+                )
             )
+
+        LocalStorageResponse value ->
+            let
+                decodeStorage =
+                    Decode.decodeValue storageDecoder value
+
+                { distance, time, result } =
+                    model
+            in
+            case decodeStorage of
+                Ok storage ->
+                    let
+                        updatedDistanceInput =
+                            { distance
+                                | value = storage.distance
+                                , unit = UnitService.fromId storage.distanceUnit
+                            }
+
+                        updatedTimeInput =
+                            { time | value = storage.time }
+
+                        updatedResult =
+                            { result | unit = UnitService.fromId storage.resultUnit }
+                    in
+                    ( { model
+                        | distance = updatedDistanceInput
+                        , time = updatedTimeInput
+                        , result = updatedResult
+                      }
+                    , if storage.isCalculated then
+                        CmdUtil.fire <| Self CalculatePace
+
+                      else
+                        Cmd.none
+                    )
+
+                Err _ ->
+                    ( model
+                    , Cmd.none
+                    )
 
 
 validate : InputElement.Model -> InputElement.Model -> Validation
@@ -267,6 +398,11 @@ calculate distance time result =
             error
 
 
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Port.responseFromLocalStorage (Self << LocalStorageResponse)
+
+
 view : Model -> Html Msg
 view model =
     div [ class "running-pace-page" ]
@@ -319,7 +455,7 @@ view model =
                                   }
                                 ]
                             }
-                            model.distanceInput
+                            model.distance
                     , Html.map (Self << TimeInputMsg) <|
                         InputElement.view
                             { name = "Running time"
@@ -336,7 +472,7 @@ view model =
                                 )
                             , links = []
                             }
-                            model.timeInput
+                            model.time
                     ]
             , result =
                 div []

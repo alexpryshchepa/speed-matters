@@ -4,6 +4,8 @@ module Elm.Service.Unit exposing
     , Pace(..)
     , Unit(..)
     , convert
+    , fromId
+    , toId
     )
 
 import Elm.Service.Calculator as CalculatorService
@@ -162,3 +164,60 @@ convertationResult result =
     result
         |> Maybe.map Converted
         |> Maybe.withDefault ConvertationFailed
+
+
+toId : Unit -> Int
+toId unit =
+    case unit of
+        Distance type_ ->
+            case type_ of
+                Kilometer ->
+                    0
+
+                Meter ->
+                    1
+
+                Mile ->
+                    2
+
+                Yard ->
+                    3
+
+        Time ->
+            4
+
+        Pace type_ ->
+            case type_ of
+                PerKilometer ->
+                    5
+
+                PerMile ->
+                    6
+
+
+fromId : Int -> Unit
+fromId id =
+    case id of
+        0 ->
+            Distance Kilometer
+
+        1 ->
+            Distance Meter
+
+        2 ->
+            Distance Mile
+
+        3 ->
+            Distance Yard
+
+        4 ->
+            Time
+
+        5 ->
+            Pace PerKilometer
+
+        6 ->
+            Pace PerMile
+
+        _ ->
+            Distance Kilometer
