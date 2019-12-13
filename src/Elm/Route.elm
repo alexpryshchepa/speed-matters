@@ -213,7 +213,7 @@ view : Model -> { title : String, body : Html Msg }
 view model =
     let
         wrapper =
-            div [ class "route" ]
+            div [ class "route mdc-typography" ]
     in
     case model.content of
         NotFoundModel subModel ->
@@ -292,7 +292,12 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
         [ span [ attribute "slot" "title" ]
             [ text "Menu" ]
         , span [ attribute "slot" "subtitle" ]
-            [ text "Select calculator" ]
+            [ a
+                [ href "/contact"
+                , class "route__contact"
+                ]
+                [ text "Contact us" ]
+            ]
         , div [ class "route__menu" ]
             [ div [ class "route__group" ]
                 [ h4 [ class "route__group-title" ]
@@ -332,8 +337,7 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
             [ node "mwc-top-app-bar-fixed"
                 []
                 [ node "mwc-icon-button"
-                    [ class "route__top-bar"
-                    , attribute "slot" "navigationIcon"
+                    [ attribute "slot" "navigationIcon"
                     , attribute "icon" "menu"
                     , onClick <| Self OpenNav
                     ]
@@ -352,21 +356,15 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                     [ text title ]
                 ]
             , div
-                [ class "route__content" ]
+                [ id "content"
+                , class "route__content"
+                ]
                 [ div
                     [ class " route__page"
                     , classList [ ( "is-visible", visible ) ]
                     ]
                     [ pageHtml ]
-                , node
-                    "custom-mwc-snackbar"
-                    [ attribute "timeoutMs" "4000"
-                    , attribute "open" (Tuple.first snackbar)
-                    , attribute "labelText" (Tuple.second snackbar)
-                    , on "MDCSnackbar:closed" (Decode.succeed <| Self HideSnackbar)
-                    ]
-                    []
-                , footer [ class "route__footer" ]
+                , footer [ class "route__footer mdc-typography--body2" ]
                     [ text "Copyright © 2019 Alex Pryshchepa. All right reserved."
                     , text " "
                     , span []
@@ -389,6 +387,14 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                             [ text "www.flaticon.com" ]
                         ]
                     ]
+                , node
+                    "custom-mwc-snackbar"
+                    [ attribute "timeoutMs" "4000"
+                    , attribute "open" (Tuple.first snackbar)
+                    , attribute "labeltext" (Tuple.second snackbar)
+                    , on "MDCSnackbar:closed" (Decode.succeed <| Self HideSnackbar)
+                    ]
+                    []
                 ]
             ]
         ]

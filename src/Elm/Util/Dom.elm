@@ -1,9 +1,11 @@
-module Elm.Util.Dom exposing (resetViewport)
+module Elm.Util.Dom exposing (scrollTop)
 
 import Browser.Dom as Dom
 import Task
 
 
-resetViewport : msg -> Cmd msg
-resetViewport tagger =
-    Task.perform (\_ -> tagger) (Dom.setViewport 0 0)
+scrollTop : String -> msg -> Cmd msg
+scrollTop id tagger =
+    Dom.getViewportOf id
+        |> Task.andThen (\_ -> Dom.setViewportOf id 0 0)
+        |> Task.attempt (\_ -> tagger)

@@ -74,7 +74,7 @@ update msg model =
               }
             , Cmd.batch
                 [ Cmd.map RouteMsg routeCmd
-                , DomUtil.resetViewport NoOp
+                , DomUtil.scrollTop "content" NoOp
                 ]
             )
 

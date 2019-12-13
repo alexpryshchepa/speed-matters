@@ -148,7 +148,7 @@ view { name, units, links } model =
                 , attribute "label" name
                 , attribute "icontrailing" "delete"
                 , attribute "value" model.value
-                , activeUnitData .error "validationMessage" "Not valid"
+                , activeUnitData .error "validationmessage" "Not valid"
                 , activeUnitData .regex "regex" ""
                 , activeUnitData .hint "helper" ""
                 , activeUnitData .shortcut "unit" ""

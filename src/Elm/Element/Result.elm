@@ -69,14 +69,14 @@ view { title, units } model =
             List.filter (\ud -> ud.unit == model.unit) (Tuple.second units)
     in
     div [ class "result-element" ]
-        [ h1 [ class "result-element__title" ]
-            [ span [] [ text title ]
+        [ div [ class "result-element__main" ]
+            [ span [ class "result-element__title mdc-typography--headline4" ] [ text title ]
             , text " "
-            , span [ class "result-element__value" ]
+            , span [ class "result-element__value mdc-typography--headline3" ]
                 [ text model.value
                 ]
             , text " "
-            , span [ class "result-element__shortcut" ]
+            , span [ class "result-element__shortcut mdc-typography--headline5" ]
                 [ List.head activeUnitData
                     |> Maybe.map (\ud -> "(" ++ ud.shortcut ++ ")")
                     |> Maybe.withDefault ""

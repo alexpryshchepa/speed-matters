@@ -416,12 +416,12 @@ view model =
     div [ class "running-pace-page" ]
         [ PageLayout.view
             { form =
-                Html.form []
+                div []
                     [ Html.map (Self << DistanceInputMsg) <|
                         InputElement.view
                             { name = "Running distance"
                             , units =
-                                ( "pace-distance"
+                                ( "running-pace-distance"
                                 , [ { unit = UnitService.Distance UnitService.Kilometer
                                     , name = "Kilometers"
                                     , hint = "Must be a number, e.g 21.098"
@@ -488,7 +488,7 @@ view model =
                         ResultElement.view
                             { title = "Your pace is"
                             , units =
-                                ( "pace-result"
+                                ( "running-pace-result"
                                 , [ { name = "Per kilometer"
                                     , unit = UnitService.Pace UnitService.PerKilometer
                                     , shortcut = "min/km"
@@ -507,6 +507,17 @@ view model =
                 , isCalculated = model.isCalculated
                 }
             , reset = Self ResetForm
-            , link = "https://en.wikipedia.org/wiki/Pace_(speed)"
+            , description =
+                div []
+                    [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Pace Calculator?" ]
+                    , p [ class "mdc-typography mdc-typography--body2" ] [ text "Pace calculators are useful for both new runners and expert runners. Whether you’re running your first race, trying to PR, or going on a training run, knowing your pace can help you train and run better." ]
+                    , h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "What Can You Calculate with a Pace Calculator?" ]
+                    , ul []
+                        [ li [ class "mdc-typography mdc-typography--body2" ] [ text "Determine how fast your pace should be if you have a certain finish time for a desired distance or race. For example, find out what pace you need to keep to run a 28-minute 5K or a sub-2:00 half marathon." ]
+                        , li [ class "mdc-typography mdc-typography--body2" ] [ text "Determine what your pace was for your training run around the neighborhood or track. For example, find out how fast your pace was for that 46-minute 5-mile training run." ]
+                        ]
+                    , h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Got Your Calculated Pace?" ]
+                    , p [ class "mdc-typography mdc-typography--body2" ] [ text "Ready to start training? Learn how to improve your form and technique and find running workouts suited to your needs." ]
+                    ]
             }
         ]

@@ -41,7 +41,7 @@ view model =
     div [ class "not-found-page" ]
         [ i [ class "not-found-page__icon material-icons" ]
             [ text "image_search" ]
-        , h1 [] [ text "Page not found" ]
+        , h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Page not found" ]
         , node "custom-mwc-button"
             [ attribute "label" "Return to home page"
             , attribute "raised" ""

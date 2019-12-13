@@ -3,9 +3,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
+    height: 100vh;
     text-align: center;
-    color: $primary-text-color;
+    padding: 48px;
+    overflow: auto;
 
     &__icon {
       font-size: 5rem;

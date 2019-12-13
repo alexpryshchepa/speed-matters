@@ -15,3 +15,8 @@ mwc-textfield,
 custom-mwc-textfield {
   --mdc-theme-primary: #{$primary-dark-color};
 }
+
+// TODO: Remove this hack once it will be fixed
+mwc-radio {
+  height: 40px;
+}

@@ -5,11 +5,6 @@
     padding: 8px 0;
   }
 
-  // TODO: Remove that hack once it will be fixed for @mwc-radio
-  mwc-radio {
-    height: 40px;
-  }
-
   &__field {
     display: flex;
     flex-direction: column;

@@ -4,14 +4,27 @@ class CustomButton extends Button {
   firstUpdated() {
     super.firstUpdated();
 
-    const button = this.shadowRoot.querySelector('.mdc-button');
+    const style_ = document.createElement('style');
+    
+    // Some fixes for component styling as mwc is still in beta
+    style_.innerHTML = `
+      .mdc-button {
+        height: auto !important;
+        min-height: 36px !important;
+      }
 
-    if (button !== null) {
-      button.style.cssText = `
-        height: auto;
-        min-height: 36px;
-      `;
-    }
+      .mdc-button--raised:not(:disabled),
+      .mdc-button--unelevated:not(:disabled) {
+        background-color: var(--mdc-theme-primary) !important;
+      }
+
+      .mdc-button .mdc-button__ripple::before,
+      .mdc-button .mdc-button__ripple::after {
+        background-color: var(--mdc-theme-primary) !important;
+      }
+    `;
+
+    this.shadowRoot.appendChild(style_);
   }
 }
 

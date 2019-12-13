@@ -33,7 +33,8 @@ class CustomTextField extends TextField {
         bottom: 0;
         display: flex;
         align-items: center;
-      ` + /* Copied from mdc-text-field__input to match text style and alignment */ `
+      ` + /* Copied from mdc-text-field__input to match text style and alignment */
+      `
         padding: 12px 6px 14px 8px;
         font-family: Roboto, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -101,21 +102,29 @@ class CustomTextField extends TextField {
   firstUpdated() {
     super.firstUpdated();
 
-    const input = this.shadowRoot.querySelector('.mdc-text-field__input');
     const icon = this.shadowRoot.querySelector('.mdc-text-field__icon');
+    const style_ = document.createElement('style');
 
-    input.style.textAlign = 'right';
+    // Some fixes/rewrites for component styling as mwc is still in beta
+    style_.innerHTML = `
+      .mdc-text-field__input {
+        text-align: right !important;
+      }
+
+      ${icon && icon.innerText === 'delete'
+        ? `.mdc-text-field__icon {
+            cursor: pointer !important;
+            pointer-events: all !important;
+          }`
+        : ''
+      }
+    `;
+
+    this.shadowRoot.appendChild(style_);
 
     if (this.getAttribute('unit')) {
-      this.createUnitContainer();
-    }
-    
-    // Make delete icon clickable
-    if (icon && icon.innerText === 'delete') {
-      icon.style.cssText = `
-        cursor: pointer;
-        pointer-events: all;
-      `;
+      // FIXME: Crossbrowser hotfix =)
+      setTimeout(() => this.createUnitContainer(), 0);
     }
   }
 
