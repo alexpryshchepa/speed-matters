@@ -1,0 +1,7 @@
+.contact-page {
+  padding: 48px;
+
+  @include mobile {
+    padding: 16px;
+  }
+}

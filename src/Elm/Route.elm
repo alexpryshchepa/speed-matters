@@ -9,6 +9,7 @@ module Elm.Route exposing
     , view
     )
 
+import Elm.Page.Contact as ContactPage
 import Elm.Page.Home as HomePage
 import Elm.Page.NotFound as NotFoundPage
 import Elm.Page.RunningPace as RunningPacePage
@@ -27,12 +28,14 @@ type Route
     = NotFound
     | Home
     | RunningPace
+    | Contact
 
 
 type Content
     = NotFoundModel NotFoundPage.Model
     | HomeModel HomePage.Model
     | RunningPaceModel RunningPacePage.Model
+    | ContactModel ContactPage.Model
 
 
 type alias Model =
@@ -50,6 +53,7 @@ type InternalMsg
     | NotFoundMsg NotFoundPage.Msg
     | HomeMsg HomePage.Msg
     | RunningPaceMsg RunningPacePage.Msg
+    | ContactMsg ContactPage.Msg
     | ShowSnackbar String
     | HideSnackbar
     | ShowContent
@@ -85,6 +89,9 @@ init url =
 
                 RunningPace ->
                     RunningPaceModel runningPaceModel
+
+                Contact ->
+                    ContactModel ContactPage.init
       , snackbar = ( "false", "" )
       , visible = False
       }
@@ -105,6 +112,7 @@ parser =
     UrlParser.oneOf
         [ UrlParser.map Home UrlParser.top
         , UrlParser.map RunningPace (UrlParser.s "running" </> UrlParser.s "pace")
+        , UrlParser.map Contact (UrlParser.s "contact")
         ]
 
 
@@ -170,6 +178,22 @@ update msg model =
                     CmdUtil.fire <| Self HideSnackbar
             )
 
+        ContactMsg subMsg ->
+            case model.content of
+                ContactModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            ContactPage.update subMsg subModel
+                    in
+                    ( { model | content = ContactModel updatedModel }
+                    , Cmd.map (Self << ContactMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
         ShowSnackbar message ->
             ( { model | snackbar = ( "true", message ) }
             , Cmd.none
@@ -197,6 +221,9 @@ routeFromContent content =
 
         RunningPaceModel _ ->
             RunningPace
+
+        ContactModel _ ->
+            Contact
 
 
 subscriptions : Model -> Sub Msg
@@ -250,6 +277,20 @@ view model =
                         (Html.map
                             (Self << RunningPaceMsg)
                             (RunningPacePage.view subModel)
+                        )
+                    ]
+            }
+
+        ContactModel subModel ->
+            { title = "Speed Matters - Contact"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Contact"
+                        (Html.map
+                            (Self << ContactMsg)
+                            (ContactPage.view subModel)
                         )
                     ]
             }
