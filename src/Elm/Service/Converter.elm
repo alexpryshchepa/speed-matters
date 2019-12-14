@@ -1,6 +1,7 @@
 module Elm.Service.Converter exposing
     ( paceToSec
     , secToPace
+    , secToTime
     , timeToSec
     )
 
@@ -20,6 +21,31 @@ timeToSec value =
 
     else
         Nothing
+
+
+secToTime : Int -> String
+secToTime sec =
+    let
+        hour =
+            CalculatorService.secToH sec
+
+        min =
+            CalculatorService.secToMin (sec - CalculatorService.hToSec hour)
+
+        toString int =
+            if int < 10 then
+                "0" ++ String.fromInt int
+
+            else
+                String.fromInt int
+    in
+    String.concat
+        [ toString hour
+        , ":"
+        , toString min
+        , ":"
+        , toString <| sec - (CalculatorService.hToSec hour + CalculatorService.minToSec min)
+        ]
 
 
 paceToSec : String -> Maybe Int

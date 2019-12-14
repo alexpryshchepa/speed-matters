@@ -17,6 +17,7 @@ module Elm.Service.Calculator exposing
     , secPerMiToSecPerKm
     , secToH
     , secToMin
+    , time
     , ydToKm
     , ydToM
     , ydToMi
@@ -133,6 +134,11 @@ secToH sec =
 secToMin : Int -> Int
 secToMin sec =
     (//) sec 60
+
+
+time : Float -> Int -> Int
+time distance sec =
+    floor <| (*) distance (toFloat sec)
 
 
 
