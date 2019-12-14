@@ -337,8 +337,8 @@ update msg model =
 
 
 validate : InputElement.Model -> InputElement.Model -> Validation
-validate distance time =
-    case ( distance.isValid, time.isValid ) of
+validate distance pace =
+    case ( distance.isValid, pace.isValid ) of
         ( False, False ) ->
             ValidationError "Both fields are not valid, please take a look at the hints"
 
@@ -350,7 +350,7 @@ validate distance time =
 
         ( True, True ) ->
             -- Fields are valid but can be empty, so check emptyness next
-            case ( not <| String.isEmpty distance.value, not <| String.isEmpty time.value ) of
+            case ( not <| String.isEmpty distance.value, not <| String.isEmpty pace.value ) of
                 ( False, False ) ->
                     ValidationError "Both fields are empty. Please fill the fields to calculate time"
 
@@ -507,15 +507,13 @@ view model =
                 [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Running Time Calculator?" ]
                 ]
     in
-    div [ class "running-pace-page" ]
-        [ PageLayout.view
-            { form = form
-            , result = result
-            , calculate =
-                { msg = Self CalculateTime
-                , isCalculated = model.isCalculated
-                }
-            , reset = Self ResetForm
-            , description = description
+    PageLayout.view
+        { form = form
+        , result = result
+        , calculate =
+            { msg = Self CalculateTime
+            , isCalculated = model.isCalculated
             }
-        ]
+        , reset = Self ResetForm
+        , description = description
+        }

@@ -12,6 +12,7 @@ module Elm.Route exposing
 import Elm.Page.Contact as ContactPage
 import Elm.Page.Home as HomePage
 import Elm.Page.NotFound as NotFoundPage
+import Elm.Page.RunningDistance as RunningDistancePage
 import Elm.Page.RunningPace as RunningPacePage
 import Elm.Page.RunningTime as RunningTimePage
 import Elm.Util.Cmd as CmdUtil
@@ -30,6 +31,7 @@ type Route
     | Home
     | RunningPace
     | RunningTime
+    | RunningDistance
     | Contact
 
 
@@ -38,6 +40,7 @@ type Content
     | HomeModel HomePage.Model
     | RunningPaceModel RunningPacePage.Model
     | RunningTimeModel RunningTimePage.Model
+    | RunningDistanceModel RunningDistancePage.Model
     | ContactModel ContactPage.Model
 
 
@@ -57,6 +60,7 @@ type InternalMsg
     | HomeMsg HomePage.Msg
     | RunningPaceMsg RunningPacePage.Msg
     | RunningTimeMsg RunningTimePage.Msg
+    | RunningDistanceMsg RunningDistancePage.Msg
     | ContactMsg ContactPage.Msg
     | ShowSnackbar String
     | HideSnackbar
@@ -83,6 +87,9 @@ init url =
 
         ( runningTimeModel, runningTimeCmd ) =
             RunningTimePage.init
+
+        ( runningDistanceModel, runningDistanceCmd ) =
+            RunningDistancePage.init
     in
     ( { nav = False
       , return = route /= Home
@@ -100,6 +107,9 @@ init url =
                 RunningTime ->
                     RunningTimeModel runningTimeModel
 
+                RunningDistance ->
+                    RunningDistanceModel runningDistanceModel
+
                 Contact ->
                     ContactModel ContactPage.init
       , snackbar = ( "false", "" )
@@ -114,6 +124,9 @@ init url =
             RunningTime ->
                 Cmd.map (Self << RunningTimeMsg) runningTimeCmd
 
+            RunningDistance ->
+                Cmd.map (Self << RunningDistanceMsg) runningDistanceCmd
+
             _ ->
                 Cmd.none
         ]
@@ -126,6 +139,7 @@ parser =
         [ UrlParser.map Home UrlParser.top
         , UrlParser.map RunningPace (UrlParser.s "running" </> UrlParser.s "pace")
         , UrlParser.map RunningTime (UrlParser.s "running" </> UrlParser.s "time")
+        , UrlParser.map RunningDistance (UrlParser.s "running" </> UrlParser.s "distance")
         , UrlParser.map Contact (UrlParser.s "contact")
         ]
 
@@ -218,6 +232,32 @@ update msg model =
                     CmdUtil.fire <| Self HideSnackbar
             )
 
+        RunningDistanceMsg (RunningDistancePage.Self subMsg) ->
+            case model.content of
+                RunningDistanceModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            RunningDistancePage.update subMsg subModel
+                    in
+                    ( { model | content = RunningDistanceModel updatedModel }
+                    , Cmd.map (Self << RunningDistanceMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
+        RunningDistanceMsg (RunningDistancePage.Parent subMsg) ->
+            ( model
+            , case subMsg of
+                RunningDistancePage.ShowSnackbar message ->
+                    CmdUtil.fire <| (Self << ShowSnackbar) message
+
+                RunningDistancePage.HideSnackbar ->
+                    CmdUtil.fire <| Self HideSnackbar
+            )
+
         ContactMsg subMsg ->
             case model.content of
                 ContactModel subModel ->
@@ -265,6 +305,9 @@ routeFromContent content =
         RunningTimeModel _ ->
             RunningTime
 
+        RunningDistanceModel _ ->
+            RunningDistance
+
         ContactModel _ ->
             Contact
 
@@ -277,6 +320,9 @@ subscriptions model =
 
         RunningTimeModel content ->
             Sub.map (Self << RunningTimeMsg) (RunningTimePage.subscriptions content)
+
+        RunningDistanceModel content ->
+            Sub.map (Self << RunningDistanceMsg) (RunningDistancePage.subscriptions content)
 
         _ ->
             Sub.none
@@ -337,6 +383,20 @@ view model =
                         (Html.map
                             (Self << RunningTimeMsg)
                             (RunningTimePage.view subModel)
+                        )
+                    ]
+            }
+
+        RunningDistanceModel subModel ->
+            { title = "Speed Matters - Running"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Running distance"
+                        (Html.map
+                            (Self << RunningDistanceMsg)
+                            (RunningDistancePage.view subModel)
                         )
                     ]
             }
@@ -406,7 +466,7 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                 , div [ class "route__group-links" ]
                     [ viewLink "/running/pace" "Pace" "timer" (currentRoute == RunningPace)
                     , viewLink "/running/time" "Time" "access_time" (currentRoute == RunningTime)
-                    , viewLink "/running/distance" "Distance" "trending_flat" False
+                    , viewLink "/running/distance" "Distance" "trending_flat" (currentRoute == RunningDistance)
                     ]
                 ]
             , div [ class "route__divider" ] []

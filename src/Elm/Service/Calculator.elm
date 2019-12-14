@@ -1,5 +1,6 @@
 module Elm.Service.Calculator exposing
-    ( hToMin
+    ( distance
+    , hToMin
     , hToSec
     , kmToM
     , kmToMi
@@ -102,6 +103,12 @@ ydToM yd =
     round <| (/) (toFloat yd) 1.093613
 
 
+distance : Int -> Int -> Float
+distance timeSec paceSec =
+    (/) (toFloat timeSec) (toFloat paceSec)
+        |> roundTo 1000
+
+
 
 -- Time
 
@@ -137,8 +144,8 @@ secToMin sec =
 
 
 time : Float -> Int -> Int
-time distance sec =
-    floor <| (*) distance (toFloat sec)
+time d sec =
+    floor <| (*) d (toFloat sec)
 
 
 
@@ -156,5 +163,5 @@ secPerMiToSecPerKm sec =
 
 
 pace : Int -> Float -> Int
-pace sec distance =
-    floor <| (/) (toFloat sec) distance
+pace sec d =
+    floor <| (/) (toFloat sec) d
