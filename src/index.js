@@ -18,6 +18,9 @@ import './js/custom-elements/custom-mwc-textfield';
 import store from 'store';
 // Service worker
 import * as serviceWorker from './js/serviceWorker';
+import iNoBounce from './js/inobounce';
+
+iNoBounce.enable();
 
 // Elm app init
 const { Elm } = require('./Main');
@@ -34,8 +37,6 @@ app.ports.getFromLocalStorage.subscribe(key => {
     app.ports.responseFromLocalStorage.send(JSON.parse(data));
   }
 });
-
-
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
