@@ -18,9 +18,6 @@ import './js/custom-elements/custom-mwc-textfield';
 import store from 'store';
 // Service worker
 import * as serviceWorker from './js/serviceWorker';
-import iNoBounce from './js/inobounce';
-
-iNoBounce.enable();
 
 // Elm app init
 const { Elm } = require('./Main');
