@@ -105,8 +105,12 @@ ydToM yd =
 
 distance : Int -> Int -> Float
 distance timeSec paceSec =
-    (/) (toFloat timeSec) (toFloat paceSec)
-        |> roundTo 1000
+    if paceSec <= 0 then
+        0
+
+    else
+        (/) (toFloat timeSec) (toFloat paceSec)
+            |> roundTo 1000
 
 
 
@@ -164,4 +168,8 @@ secPerMiToSecPerKm sec =
 
 pace : Int -> Float -> Int
 pace sec d =
-    floor <| (/) (toFloat sec) d
+    if d <= 0 then
+        0
+
+    else
+        floor <| (/) (toFloat sec) d
