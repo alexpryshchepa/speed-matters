@@ -2,11 +2,15 @@
   padding: 24px 0;
 
   &__main {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
     margin: 0 0 12px;
   }
 
   &__title {
     font-weight: $thin-font-weight;
+    margin-right: 8px;
   }
 
   &__scroller {
@@ -25,6 +29,10 @@
   &__value {
     color: $primary-dark-color;
     font-weight: $medium-font-weight;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    margin-right: 8px;
   }
 
   &__shortcut {

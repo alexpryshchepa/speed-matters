@@ -71,11 +71,12 @@ view { title, units } model =
     div [ class "result-element" ]
         [ div [ class "result-element__main" ]
             [ span [ class "result-element__title mdc-typography--headline4" ] [ text title ]
-            , text " "
-            , span [ class "result-element__value mdc-typography--headline3" ]
+            , span
+                [ class "result-element__value mdc-typography--headline3"
+                , attribute "title" model.value
+                ]
                 [ text model.value
                 ]
-            , text " "
             , span [ class "result-element__shortcut mdc-typography--headline5" ]
                 [ List.head activeUnitData
                     |> Maybe.map (\ud -> "(" ++ ud.shortcut ++ ")")
