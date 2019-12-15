@@ -42,16 +42,10 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div [ class "home-page" ]
-        [ div [ class "home-page__heading" ]
-            [ h1 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Most useful sport calculators in one place" ]
-            , p [ class "mdc-typography mdc-typography--body1" ]
-                [ text "Maroon matey hogshead cackle fruit sloop gaff hulk hardtack ahoy belay. Deadlights jack topgallant reef aft mutiny hogshead tackle piracy interloper. Lanyard dance the hempen jig yard boatswain belaying pin Brethren of the Coast reef sails American Main maroon jolly boat.\n\nJolly boat draught rutters fore dance the hempen jig fire in the hole starboard bring a spring upon her cable lookout coxswain. Fluke chantey no prey, no pay yardarm cutlass plunder boatswain tack grog blossom run a shot across the bow. Schooner nipperkin Blimey hands square-rigged brig belay carouser hail-shot interloper.\n\nLong boat bowsprit spanker American Main scallywag handsomely grog blossom wherry lugsail main sheet. To go on account cackle fruit tack gabion deadlights nipperkin log Shiver me timbers provost squiffy. Arr belaying pin yawl scurvy Pieces of Eight swab parrel pillage chase Shiver me timbers." ]
-            ]
-        , div [ class "home-page__cards" ]
+        [ div [ class "home-page__cards" ]
             [ viewCard
                 "Running"
-                "Most important calculators"
+                "What pace should be to run a marathon less than 4 hours? How much time take to run 100 meters? Calculate it here."
                 "images/icons/running.svg"
                 [ { label = "Pace"
                   , link = "/running/pace"
@@ -65,7 +59,7 @@ view model =
                 ]
             , viewCard
                 "Cycling"
-                "Get some useful data"
+                "Does speed matters for you? You are in the right place!"
                 "images/icons/cycling.svg"
                 [ { label = "Estimated power"
                   , link = "/cycling/power"
@@ -82,7 +76,7 @@ view model =
                 ]
             , viewCard
                 "Swimming"
-                "Predict you results with awesome swimming calculators"
+                "What pace to choose for your next swim? Try this stuff"
                 "images/icons/swimming.svg"
                 [ { label = "Pace"
                   , link = "/swimming/pace"
@@ -94,6 +88,10 @@ view model =
                   , link = "/swimming/distance"
                   }
                 ]
+            ]
+        , div [ class "home-page__heading" ]
+            [ p [ class "mdc-typography mdc-typography--body1" ]
+                [ text "This application combines calculators for running, cycling and swimming. With their help, you can easily calculate the various metrics in these sports. Preparing for the first marathon distance, the next open water race or a long bike ride, you will most likely need to calculate the pace, speed, distance. For both the amateur and the professional athlete, it is very important to consider the speed, distance and time when building the training process. If you want to plan your result in upcoming competitions or find out the right pace for a personal record, our calculator will help you with this. It will be convenient for building training plans in the triathlon, as well as for all disciplines separately." ]
             ]
         ]
 
@@ -125,7 +123,7 @@ viewCard title content image buttons =
             , p [ class "mdc-typography mdc-typography--body2 home-page__card-text" ]
                 [ text content ]
             ]
-        , div [ class "mdc-card__actions" ]
+        , div [ class "mdc-card__actions home-page__actions" ]
             [ div [ class "mdc-card__action-buttons home-page__card-buttons" ]
                 (List.map button buttons)
             ]

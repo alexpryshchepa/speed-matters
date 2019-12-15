@@ -12,10 +12,11 @@
   &__cards {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
   }
 
   &__card {
+    display: flex;
+    flex-direction: column;
     width: calc(25% - 24px);
     min-width: 280px;
     max-width: 360px;
@@ -35,7 +36,6 @@
 
   &__card-content {
     padding: 8px 20px;
-    
   }
 
   &__card-title {
@@ -45,6 +45,10 @@
 
   &__card-text {
     margin: 0;
+  }
+
+  &__actions {
+    margin-top: auto;
   }
 
   &__card-buttons {
