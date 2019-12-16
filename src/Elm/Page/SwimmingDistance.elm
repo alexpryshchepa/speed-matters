@@ -308,10 +308,14 @@ update msg model =
                                 | value = storage.pace
                                 , unit = UnitService.fromId storage.paceUnit
                             }
+
+                        updatedResultInput =
+                            { result | unit = UnitService.fromId storage.distanceUnit }
                     in
                     ( { model
                         | time = updatedTimeInput
                         , pace = updatedPaceInput
+                        , result = updatedResultInput
                       }
                     , if storage.isCalculated then
                         CmdUtil.fire <| Self CalculateDistance
@@ -414,7 +418,7 @@ view model =
                     InputElement.view
                         { name = "Swimming time"
                         , units =
-                            ( ""
+                            ( "swimming-distance-time"
                             , [ { unit = UnitService.Time
                                 , name = ""
                                 , hint = "You should follow this pattern - HH:MM:SS"
@@ -432,7 +436,7 @@ view model =
                     InputElement.view
                         { name = "Swimming pace"
                         , units =
-                            ( ""
+                            ( "swimming-distance-pace"
                             , [ { unit = UnitService.Pace UnitService.Per100Meters
                                 , name = "Per meters"
                                 , hint = "You should follow this pattern - MM:SS"
@@ -461,7 +465,7 @@ view model =
                     ResultElement.view
                         { title = "Your distance is"
                         , units =
-                            ( "running-distance-result"
+                            ( "swimming-distance-result"
                             , [ { name = "Meters"
                                 , unit = UnitService.Distance UnitService.Meter
                                 , shortcut = "m"

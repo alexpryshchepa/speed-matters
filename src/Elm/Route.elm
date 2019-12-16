@@ -10,6 +10,9 @@ module Elm.Route exposing
     )
 
 import Elm.Page.Contact as ContactPage
+import Elm.Page.CyclingDistance as CyclingDistancePage
+import Elm.Page.CyclingSpeed as CyclingSpeedPage
+import Elm.Page.CyclingTime as CyclingTimePage
 import Elm.Page.Home as HomePage
 import Elm.Page.NotFound as NotFoundPage
 import Elm.Page.RunningDistance as RunningDistancePage
@@ -35,6 +38,9 @@ type Route
     | RunningPace
     | RunningTime
     | RunningDistance
+    | CyclingSpeed
+    | CyclingTime
+    | CyclingDistance
     | SwimmingPace
     | SwimmingTime
     | SwimmingDistance
@@ -47,6 +53,9 @@ type Content
     | RunningPaceModel RunningPacePage.Model
     | RunningTimeModel RunningTimePage.Model
     | RunningDistanceModel RunningDistancePage.Model
+    | CyclingSpeedModel CyclingSpeedPage.Model
+    | CyclingTimeModel CyclingTimePage.Model
+    | CyclingDistanceModel CyclingDistancePage.Model
     | SwimmingPaceModel SwimmingPacePage.Model
     | SwimmingTimeModel SwimmingTimePage.Model
     | SwimmingDistanceModel SwimmingDistancePage.Model
@@ -70,6 +79,9 @@ type InternalMsg
     | RunningPaceMsg RunningPacePage.Msg
     | RunningTimeMsg RunningTimePage.Msg
     | RunningDistanceMsg RunningDistancePage.Msg
+    | CyclingSpeedMsg CyclingSpeedPage.Msg
+    | CyclingTimeMsg CyclingTimePage.Msg
+    | CyclingDistanceMsg CyclingDistancePage.Msg
     | SwimmingPaceMsg SwimmingPacePage.Msg
     | SwimmingTimeMsg SwimmingTimePage.Msg
     | SwimmingDistanceMsg SwimmingDistancePage.Msg
@@ -103,6 +115,15 @@ init url =
         ( runningDistanceModel, runningDistanceCmd ) =
             RunningDistancePage.init
 
+        ( cyclingSpeedModel, cyclingSpeedCmd ) =
+            CyclingSpeedPage.init
+
+        ( cyclingTimeModel, cyclingTimeCmd ) =
+            CyclingTimePage.init
+
+        ( cyclingDistanceModel, cyclingDistanceCmd ) =
+            CyclingDistancePage.init
+
         ( swimmingPaceModel, swimmingPaceCmd ) =
             SwimmingPacePage.init
 
@@ -131,6 +152,15 @@ init url =
                 RunningDistance ->
                     RunningDistanceModel runningDistanceModel
 
+                CyclingSpeed ->
+                    CyclingSpeedModel cyclingSpeedModel
+
+                CyclingTime ->
+                    CyclingTimeModel cyclingTimeModel
+
+                CyclingDistance ->
+                    CyclingDistanceModel cyclingDistanceModel
+
                 SwimmingPace ->
                     SwimmingPaceModel swimmingPaceModel
 
@@ -157,6 +187,15 @@ init url =
             RunningDistance ->
                 Cmd.map (Self << RunningDistanceMsg) runningDistanceCmd
 
+            CyclingSpeed ->
+                Cmd.map (Self << CyclingSpeedMsg) cyclingSpeedCmd
+
+            CyclingTime ->
+                Cmd.map (Self << CyclingTimeMsg) cyclingTimeCmd
+
+            CyclingDistance ->
+                Cmd.map (Self << CyclingDistanceMsg) cyclingDistanceCmd
+
             SwimmingPace ->
                 Cmd.map (Self << SwimmingPaceMsg) swimmingPaceCmd
 
@@ -179,6 +218,9 @@ parser =
         , UrlParser.map RunningPace (UrlParser.s "running" </> UrlParser.s "pace")
         , UrlParser.map RunningTime (UrlParser.s "running" </> UrlParser.s "time")
         , UrlParser.map RunningDistance (UrlParser.s "running" </> UrlParser.s "distance")
+        , UrlParser.map CyclingSpeed (UrlParser.s "cycling" </> UrlParser.s "speed")
+        , UrlParser.map CyclingTime (UrlParser.s "cycling" </> UrlParser.s "time")
+        , UrlParser.map CyclingDistance (UrlParser.s "cycling" </> UrlParser.s "distance")
         , UrlParser.map SwimmingPace (UrlParser.s "swimming" </> UrlParser.s "pace")
         , UrlParser.map SwimmingTime (UrlParser.s "swimming" </> UrlParser.s "time")
         , UrlParser.map SwimmingDistance (UrlParser.s "swimming" </> UrlParser.s "distance")
@@ -297,6 +339,84 @@ update msg model =
                     CmdUtil.fire <| (Self << ShowSnackbar) message
 
                 RunningDistancePage.HideSnackbar ->
+                    CmdUtil.fire <| Self HideSnackbar
+            )
+
+        CyclingSpeedMsg (CyclingSpeedPage.Self subMsg) ->
+            case model.content of
+                CyclingSpeedModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            CyclingSpeedPage.update subMsg subModel
+                    in
+                    ( { model | content = CyclingSpeedModel updatedModel }
+                    , Cmd.map (Self << CyclingSpeedMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
+        CyclingSpeedMsg (CyclingSpeedPage.Parent subMsg) ->
+            ( model
+            , case subMsg of
+                CyclingSpeedPage.ShowSnackbar message ->
+                    CmdUtil.fire <| (Self << ShowSnackbar) message
+
+                CyclingSpeedPage.HideSnackbar ->
+                    CmdUtil.fire <| Self HideSnackbar
+            )
+
+        CyclingTimeMsg (CyclingTimePage.Self subMsg) ->
+            case model.content of
+                CyclingTimeModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            CyclingTimePage.update subMsg subModel
+                    in
+                    ( { model | content = CyclingTimeModel updatedModel }
+                    , Cmd.map (Self << CyclingTimeMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
+        CyclingTimeMsg (CyclingTimePage.Parent subMsg) ->
+            ( model
+            , case subMsg of
+                CyclingTimePage.ShowSnackbar message ->
+                    CmdUtil.fire <| (Self << ShowSnackbar) message
+
+                CyclingTimePage.HideSnackbar ->
+                    CmdUtil.fire <| Self HideSnackbar
+            )
+
+        CyclingDistanceMsg (CyclingDistancePage.Self subMsg) ->
+            case model.content of
+                CyclingDistanceModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            CyclingDistancePage.update subMsg subModel
+                    in
+                    ( { model | content = CyclingDistanceModel updatedModel }
+                    , Cmd.map (Self << CyclingDistanceMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
+        CyclingDistanceMsg (CyclingDistancePage.Parent subMsg) ->
+            ( model
+            , case subMsg of
+                CyclingDistancePage.ShowSnackbar message ->
+                    CmdUtil.fire <| (Self << ShowSnackbar) message
+
+                CyclingDistancePage.HideSnackbar ->
                     CmdUtil.fire <| Self HideSnackbar
             )
 
@@ -428,6 +548,15 @@ routeFromContent content =
         RunningDistanceModel _ ->
             RunningDistance
 
+        CyclingSpeedModel _ ->
+            CyclingSpeed
+
+        CyclingTimeModel _ ->
+            CyclingTime
+
+        CyclingDistanceModel _ ->
+            CyclingDistance
+
         SwimmingPaceModel _ ->
             SwimmingPace
 
@@ -452,6 +581,15 @@ subscriptions model =
 
         RunningDistanceModel content ->
             Sub.map (Self << RunningDistanceMsg) (RunningDistancePage.subscriptions content)
+
+        CyclingSpeedModel content ->
+            Sub.map (Self << CyclingSpeedMsg) (CyclingSpeedPage.subscriptions content)
+
+        CyclingTimeModel content ->
+            Sub.map (Self << CyclingTimeMsg) (CyclingTimePage.subscriptions content)
+
+        CyclingDistanceModel content ->
+            Sub.map (Self << CyclingDistanceMsg) (CyclingDistancePage.subscriptions content)
 
         SwimmingPaceModel content ->
             Sub.map (Self << SwimmingPaceMsg) (SwimmingPacePage.subscriptions content)
@@ -535,6 +673,48 @@ view model =
                         (Html.map
                             (Self << RunningDistanceMsg)
                             (RunningDistancePage.view subModel)
+                        )
+                    ]
+            }
+
+        CyclingSpeedModel subModel ->
+            { title = "Speed Matters - Cycling"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Cycling speed"
+                        (Html.map
+                            (Self << CyclingSpeedMsg)
+                            (CyclingSpeedPage.view subModel)
+                        )
+                    ]
+            }
+
+        CyclingTimeModel subModel ->
+            { title = "Speed Matters - Cycling"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Cycling time"
+                        (Html.map
+                            (Self << CyclingTimeMsg)
+                            (CyclingTimePage.view subModel)
+                        )
+                    ]
+            }
+
+        CyclingDistanceModel subModel ->
+            { title = "Speed Matters - Cycling"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Cycling distance"
+                        (Html.map
+                            (Self << CyclingDistanceMsg)
+                            (CyclingDistancePage.view subModel)
                         )
                     ]
             }

@@ -415,7 +415,7 @@ view model =
                     InputElement.view
                         { name = "Running distance"
                         , units =
-                            ( "running-pace-distance"
+                            ( "running-time-distance"
                             , [ { unit = UnitService.Distance UnitService.Kilometer
                                 , name = "Kilometers"
                                 , hint = "Must be a number, e.g 21.098"
@@ -462,7 +462,7 @@ view model =
                     InputElement.view
                         { name = "Running pace"
                         , units =
-                            ( ""
+                            ( "running-time-pace"
                             , [ { unit = UnitService.Pace UnitService.PerKilometer
                                 , name = "Per kilometer"
                                 , hint = "You should follow this pattern - MM:SS"
@@ -491,7 +491,7 @@ view model =
                     ResultElement.view
                         { title = "Your time is"
                         , units =
-                            ( "running-time-result"
+                            ( ""
                             , []
                             )
                         }

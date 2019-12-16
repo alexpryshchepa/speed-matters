@@ -463,7 +463,7 @@ view model =
                     InputElement.view
                         { name = "Running time"
                         , units =
-                            ( ""
+                            ( "running-pace-time"
                             , [ { unit = UnitService.Time
                                 , name = ""
                                 , hint = "You should follow this pattern - HH:MM:SS"

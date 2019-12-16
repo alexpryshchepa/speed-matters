@@ -2,6 +2,7 @@ module Elm.Service.Converter exposing
     ( paceToSec
     , secToPace
     , secToTime
+    , timeToHour
     , timeToSec
     )
 
@@ -23,14 +24,28 @@ timeToSec value =
         Nothing
 
 
+timeToHour : String -> Maybe Float
+timeToHour value =
+    if ValidatorService.isTime value then
+        case String.split ":" value |> List.map String.toInt of
+            [ Just h, Just min, Just sec ] ->
+                Just <| toFloat h + CalculatorService.minToH (toFloat min) + CalculatorService.secToH sec
+
+            xs ->
+                Nothing
+
+    else
+        Nothing
+
+
 secToTime : Int -> String
 secToTime sec =
     let
         hour =
-            CalculatorService.secToH sec
+            floor <| CalculatorService.secToH sec
 
         min =
-            CalculatorService.secToMin (sec - CalculatorService.hToSec hour)
+            floor <| CalculatorService.secToMin (sec - CalculatorService.hToSec hour)
 
         toString int =
             if int < 10 then
@@ -66,7 +81,7 @@ secToPace : Int -> String
 secToPace sec =
     let
         min =
-            CalculatorService.secToMin sec
+            floor <| CalculatorService.secToMin sec
 
         toString int =
             if int < 10 then

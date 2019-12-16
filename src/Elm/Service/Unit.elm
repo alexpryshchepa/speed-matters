@@ -2,6 +2,7 @@ module Elm.Service.Unit exposing
     ( Convertation(..)
     , Distance(..)
     , Pace(..)
+    , Speed(..)
     , Unit(..)
     , convert
     , fromId
@@ -19,6 +20,7 @@ type Unit
     = Distance Distance
     | Time
     | Pace Pace
+    | Speed Speed
 
 
 type Distance
@@ -35,6 +37,11 @@ type Pace
     | Per100Yards
 
 
+type Speed
+    = KilometersPerHour
+    | MilesPerHour
+
+
 type Convertation
     = Converted String
     | ConvertationFailed
@@ -49,6 +56,9 @@ convert from to value =
 
         ( Pace unitFrom, Pace unitTo ) ->
             convertPace unitFrom unitTo value
+
+        ( Speed unitFrom, Speed unitTo ) ->
+            convertSpeed unitFrom unitTo value
 
         _ ->
             ConvertationSkipped
@@ -238,6 +248,34 @@ convertPace from to value =
                     ConvertationSkipped
 
 
+convertSpeed : Speed -> Speed -> String -> Convertation
+convertSpeed from to value =
+    case from of
+        KilometersPerHour ->
+            case to of
+                KilometersPerHour ->
+                    ConvertationSkipped
+
+                MilesPerHour ->
+                    Just CalculatorService.kmPerHToMiPerH
+                        |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
+                        |> convertationResult
+
+        MilesPerHour ->
+            case to of
+                MilesPerHour ->
+                    ConvertationSkipped
+
+                KilometersPerHour ->
+                    Just CalculatorService.miPerHToKmPerH
+                        |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
+                        |> convertationResult
+
+
 isSafeFloat : Maybe Float -> Maybe Float
 isSafeFloat num =
     case num of
@@ -307,6 +345,14 @@ toId unit =
                 Per100Yards ->
                     8
 
+        Speed type_ ->
+            case type_ of
+                KilometersPerHour ->
+                    9
+
+                MilesPerHour ->
+                    10
+
 
 fromId : Int -> Unit
 fromId id =
@@ -337,6 +383,12 @@ fromId id =
 
         8 ->
             Pace Per100Yards
+
+        9 ->
+            Speed KilometersPerHour
+
+        10 ->
+            Speed MilesPerHour
 
         _ ->
             Distance Kilometer

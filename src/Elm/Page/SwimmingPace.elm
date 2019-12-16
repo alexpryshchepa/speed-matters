@@ -467,7 +467,7 @@ view model =
                     InputElement.view
                         { name = "Swimming time"
                         , units =
-                            ( ""
+                            ( "swimming-pace-time"
                             , [ { unit = UnitService.Time
                                 , name = ""
                                 , hint = "You should follow this pattern - HH:MM:SS"
@@ -488,7 +488,7 @@ view model =
                     ResultElement.view
                         { title = "Your pace is"
                         , units =
-                            ( "running-pace-result"
+                            ( "swimming-pace-result"
                             , [ { name = "Per meters"
                                 , unit = UnitService.Pace UnitService.Per100Meters
                                 , shortcut = "min/100m"

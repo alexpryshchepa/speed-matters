@@ -1,13 +1,16 @@
 module Elm.Service.Calculator exposing
     ( distance
+    , distance2
     , hToMin
     , hToSec
+    , kmPerHToMiPerH
     , kmToM
     , kmToMi
     , kmToYd
     , mToKm
     , mToMi
     , mToYd
+    , miPerHToKmPerH
     , miToKm
     , miToM
     , miToYd
@@ -21,7 +24,9 @@ module Elm.Service.Calculator exposing
     , secPerYdToSecPerM
     , secToH
     , secToMin
+    , speed
     , time
+    , time2
     , ydToKm
     , ydToM
     , ydToMi
@@ -116,6 +121,12 @@ distance timeSec paceSec =
             |> roundTo 1000
 
 
+distance2 : Float -> Float -> Float
+distance2 t s =
+    (*) t s
+        |> roundTo 1000
+
+
 
 -- Time
 
@@ -130,9 +141,9 @@ hToSec =
     (*) 3600
 
 
-minToH : Int -> Int
+minToH : Float -> Float
 minToH min =
-    floor <| (/) (toFloat min) 60
+    (/) min 60
 
 
 minToSec : Int -> Int
@@ -140,19 +151,24 @@ minToSec =
     (*) 60
 
 
-secToH : Int -> Int
+secToH : Int -> Float
 secToH sec =
-    floor <| (/) (toFloat sec) 3600
+    (/) (toFloat sec) 3600
 
 
-secToMin : Int -> Int
+secToMin : Int -> Float
 secToMin sec =
-    floor <| (/) (toFloat sec) 60
+    (/) (toFloat sec) 60
 
 
 time : Float -> Int -> Int
 time d sec =
     floor <| (*) d (toFloat sec)
+
+
+time2 : Float -> Float -> Float
+time2 d s =
+    (/) d s
 
 
 
@@ -186,3 +202,29 @@ pace sec d =
 
     else
         floor <| (/) (toFloat sec) d
+
+
+
+-- Speed
+
+
+kmPerHToMiPerH : Float -> Float
+kmPerHToMiPerH kmh =
+    (/) kmh 1.60934
+        |> roundTo 10
+
+
+miPerHToKmPerH : Float -> Float
+miPerHToKmPerH mph =
+    (*) mph 1.60934
+        |> roundTo 10
+
+
+speed : Float -> Float -> Float
+speed d t =
+    if t <= 0 then
+        0
+
+    else
+        (/) d t
+            |> roundTo 10

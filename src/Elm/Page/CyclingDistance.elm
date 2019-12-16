@@ -1,4 +1,4 @@
-module Elm.Page.RunningDistance exposing
+module Elm.Page.CyclingDistance exposing
     ( ExternalMsg(..)
     , Model
     , Msg(..)
@@ -29,7 +29,7 @@ import Task
 
 type alias Model =
     { time : InputElement.Model
-    , pace : InputElement.Model
+    , speed : InputElement.Model
     , result : ResultElement.Model
     , isCalculated : Bool
     }
@@ -42,7 +42,7 @@ type Msg
 
 type InternalMsg
     = TimeInputMsg InputElement.Msg
-    | PaceInputMsg InputElement.Msg
+    | SpeedInputMsg InputElement.Msg
     | ResultMsg ResultElement.Msg
     | CalculateDistance
     | ResetForm
@@ -67,8 +67,8 @@ type Calculation
 
 type alias Storage =
     { time : String
-    , pace : String
-    , paceUnit : Int
+    , speed : String
+    , speedUnit : Int
     , distanceUnit : Int
     , isCalculated : Bool
     }
@@ -76,15 +76,15 @@ type alias Storage =
 
 db : String
 db =
-    "running-distance"
+    "cycling-distance"
 
 
 storageEncoder : Storage -> Encode.Value
 storageEncoder storage =
     Encode.object
         [ ( "time", Encode.string storage.time )
-        , ( "pace", Encode.string storage.pace )
-        , ( "paceUnit", Encode.int storage.paceUnit )
+        , ( "speed", Encode.string storage.speed )
+        , ( "speedUnit", Encode.int storage.speedUnit )
         , ( "distanceUnit", Encode.int storage.distanceUnit )
         , ( "isCalculated", Encode.bool storage.isCalculated )
         ]
@@ -94,8 +94,8 @@ storageDecoder : Decode.Decoder Storage
 storageDecoder =
     Decode.map5 Storage
         (Decode.at [ "time" ] Decode.string)
-        (Decode.at [ "pace" ] Decode.string)
-        (Decode.at [ "paceUnit" ] Decode.int)
+        (Decode.at [ "speed" ] Decode.string)
+        (Decode.at [ "speedUnit" ] Decode.int)
         (Decode.at [ "distanceUnit" ] Decode.int)
         (Decode.at [ "isCalculated" ] Decode.bool)
 
@@ -104,10 +104,10 @@ init : ( Model, Cmd Msg )
 init =
     ( { time =
             InputElement.init UnitService.Time
-      , pace =
-            InputElement.init <| UnitService.Pace UnitService.PerKilometer
+      , speed =
+            InputElement.init <| UnitService.Speed UnitService.KilometersPerHour
       , result =
-            ResultElement.init <| UnitService.Distance UnitService.Kilometer
+            ResultElement.init <| UnitService.Distance UnitService.Meter
       , isCalculated = False
       }
       -- FIXME
@@ -157,16 +157,16 @@ update msg model =
                     , Cmd.none
                     )
 
-        PaceInputMsg (InputElement.Self subMsg) ->
+        SpeedInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
-                    InputElement.update subMsg model.pace
+                    InputElement.update subMsg model.speed
             in
-            ( { model | pace = updatedModel }
-            , Cmd.map (Self << PaceInputMsg) cmd
+            ( { model | speed = updatedModel }
+            , Cmd.map (Self << SpeedInputMsg) cmd
             )
 
-        PaceInputMsg (InputElement.Parent subMsg) ->
+        SpeedInputMsg (InputElement.Parent subMsg) ->
             case subMsg of
                 InputElement.ShowSnackbar message ->
                     ( model
@@ -236,8 +236,8 @@ update msg model =
                             ( db
                             , storageEncoder
                                 { time = model.time.value
-                                , pace = model.pace.value
-                                , paceUnit = UnitService.toId model.pace.unit
+                                , speed = model.speed.value
+                                , speedUnit = UnitService.toId model.speed.unit
                                 , distanceUnit = UnitService.toId model.result.unit
                                 , isCalculated = True
                                 }
@@ -246,7 +246,7 @@ update msg model =
                     )
 
                 validation =
-                    validate model.time model.pace
+                    validate model.time model.speed
             in
             case validation of
                 ValidationError message ->
@@ -255,7 +255,7 @@ update msg model =
                 ValidationSuccess ->
                     let
                         calculation =
-                            calculate model.time model.pace model.result
+                            calculate model.time model.speed model.result
                     in
                     case calculation of
                         CalculationSuccess distance ->
@@ -263,7 +263,7 @@ update msg model =
                                 success distance
 
                             else
-                                error "The distance is out of range, please insert smaller values of time or pace"
+                                error "The distance is out of range, please insert smaller values of time or speed"
 
                         CalculationError message ->
                             error message
@@ -271,7 +271,7 @@ update msg model =
         ResetForm ->
             ( { model
                 | time = InputElement.setValue "" model.time
-                , pace = InputElement.setValue "" model.pace
+                , speed = InputElement.setValue "" model.speed
                 , result = ResultElement.setValue "..." model.result
                 , isCalculated = False
               }
@@ -279,8 +279,8 @@ update msg model =
                 ( db
                 , storageEncoder
                     { time = ""
-                    , pace = ""
-                    , paceUnit = UnitService.toId model.pace.unit
+                    , speed = ""
+                    , speedUnit = UnitService.toId model.speed.unit
                     , distanceUnit = UnitService.toId model.result.unit
                     , isCalculated = False
                     }
@@ -292,7 +292,7 @@ update msg model =
                 decodeStorage =
                     Decode.decodeValue storageDecoder value
 
-                { time, pace, result } =
+                { time, speed, result } =
                     model
             in
             case decodeStorage of
@@ -303,10 +303,10 @@ update msg model =
                                 | value = storage.time
                             }
 
-                        updatedPaceInput =
-                            { pace
-                                | value = storage.pace
-                                , unit = UnitService.fromId storage.paceUnit
+                        updatedSpeedInput =
+                            { speed
+                                | value = storage.speed
+                                , unit = UnitService.fromId storage.speedUnit
                             }
 
                         updatedResultInput =
@@ -314,7 +314,7 @@ update msg model =
                     in
                     ( { model
                         | time = updatedTimeInput
-                        , pace = updatedPaceInput
+                        , speed = updatedSpeedInput
                         , result = updatedResultInput
                       }
                     , if storage.isCalculated then
@@ -336,66 +336,54 @@ update msg model =
 
 
 validate : InputElement.Model -> InputElement.Model -> Validation
-validate time pace =
-    case ( time.isValid, pace.isValid ) of
+validate time speed =
+    case ( time.isValid, speed.isValid ) of
         ( False, False ) ->
             ValidationError "Both fields are not valid, please take a look at the hints"
 
         ( True, False ) ->
-            ValidationError "Not valid value for pace"
+            ValidationError "Not valid value for speed"
 
         ( False, True ) ->
             ValidationError "Not valid value for time"
 
         ( True, True ) ->
             -- Fields are valid but can be empty, so check emptyness next
-            case ( not <| String.isEmpty time.value, not <| String.isEmpty pace.value ) of
+            case ( not <| String.isEmpty time.value, not <| String.isEmpty speed.value ) of
                 ( False, False ) ->
                     ValidationError "Both fields are empty. Please fill the fields to calculate distance"
 
                 ( True, False ) ->
-                    ValidationError "Please add pace value"
+                    ValidationError "Please add speed value"
 
                 ( False, True ) ->
                     ValidationError "Please add time value"
 
                 ( True, True ) ->
-                    -- Fields are valid and have value, so we can try to calculate pace
+                    -- Fields are valid and have value, so we can try to calculate speed
                     ValidationSuccess
 
 
 calculate : InputElement.Model -> InputElement.Model -> ResultElement.Model -> Calculation
-calculate time pace result =
+calculate time speed result =
     let
         error =
             CalculationError "Something went wrong. Please contact us"
     in
-    case ( ConverterService.timeToSec time.value, ConverterService.paceToSec pace.value ) of
-        ( Just t, Just p ) ->
-            case ( result.unit, pace.unit ) of
-                ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.distance t p
+    case ( ConverterService.timeToHour time.value, String.toFloat speed.value ) of
+        ( Just t, Just s ) ->
+            case ( result.unit, speed.unit ) of
+                ( UnitService.Distance UnitService.Kilometer, UnitService.Speed UnitService.KilometersPerHour ) ->
+                    CalculationSuccess <| CalculatorService.distance2 t s
 
-                ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.kmToM (CalculatorService.distance t p))
+                ( UnitService.Distance UnitService.Mile, UnitService.Speed UnitService.MilesPerHour ) ->
+                    CalculationSuccess <| CalculatorService.distance2 t s
 
-                ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.miToKm (CalculatorService.distance t p)
+                ( UnitService.Distance UnitService.Kilometer, UnitService.Speed UnitService.MilesPerHour ) ->
+                    CalculationSuccess <| CalculatorService.distance2 t (CalculatorService.miPerHToKmPerH s)
 
-                ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.miToM (CalculatorService.distance t p))
-
-                ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.distance t p
-
-                ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.kmToMi (CalculatorService.distance t p)
-
-                ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.miToYd (CalculatorService.distance t p))
-
-                ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.kmToYd (CalculatorService.distance t p))
+                ( UnitService.Distance UnitService.Mile, UnitService.Speed UnitService.KilometersPerHour ) ->
+                    CalculationSuccess <| CalculatorService.distance2 t (CalculatorService.kmPerHToMiPerH s)
 
                 _ ->
                     error
@@ -416,9 +404,9 @@ view model =
             div []
                 [ Html.map (Self << TimeInputMsg) <|
                     InputElement.view
-                        { name = "Running time"
+                        { name = "Cycling time"
                         , units =
-                            ( "running-distance-time"
+                            ( "cycling-distance-time"
                             , [ { unit = UnitService.Time
                                 , name = ""
                                 , hint = "You should follow this pattern - HH:MM:SS"
@@ -432,31 +420,31 @@ view model =
                             []
                         }
                         model.time
-                , Html.map (Self << PaceInputMsg) <|
+                , Html.map (Self << SpeedInputMsg) <|
                     InputElement.view
-                        { name = "Running pace"
+                        { name = "Cycling speed"
                         , units =
-                            ( "running-distance-pace"
-                            , [ { unit = UnitService.Pace UnitService.PerKilometer
-                                , name = "Per kilometer"
-                                , hint = "You should follow this pattern - MM:SS"
-                                , shortcut = "min/km"
-                                , regex = ValidatorService.paceRegex
-                                , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
+                            ( "cycling-distance-speed"
+                            , [ { unit = UnitService.Speed UnitService.KilometersPerHour
+                                , name = "Kilometers"
+                                , hint = "Must be a number, e.g 33.5"
+                                , shortcut = "km/h"
+                                , regex = ValidatorService.floatRegex
+                                , error = "Wrong value, please make sure you value is float or integer number e.g. 18"
                                 }
-                              , { unit = UnitService.Pace UnitService.PerMile
-                                , name = "Per mile"
-                                , hint = "You should follow this pattern - MM:SS"
-                                , shortcut = "min/mi"
-                                , regex = ValidatorService.paceRegex
-                                , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
+                              , { unit = UnitService.Speed UnitService.MilesPerHour
+                                , name = "Miles"
+                                , hint = "Must be a number, e.g 33.5"
+                                , shortcut = "mi/h"
+                                , regex = ValidatorService.floatRegex
+                                , error = "Wrong value, please make sure you value is float or integer number e.g. 18"
                                 }
                               ]
                             )
                         , links =
                             []
                         }
-                        model.pace
+                        model.speed
                 ]
 
         result =
@@ -465,22 +453,14 @@ view model =
                     ResultElement.view
                         { title = "Your distance is"
                         , units =
-                            ( "running-distance-result"
+                            ( "cycling-distance-result"
                             , [ { name = "Kilometers"
                                 , unit = UnitService.Distance UnitService.Kilometer
                                 , shortcut = "km"
                                 }
-                              , { name = "Meters"
-                                , unit = UnitService.Distance UnitService.Meter
-                                , shortcut = "m"
-                                }
                               , { name = "Miles"
                                 , unit = UnitService.Distance UnitService.Mile
                                 , shortcut = "mi"
-                                }
-                              , { name = "Yards"
-                                , unit = UnitService.Distance UnitService.Yard
-                                , shortcut = "yd"
                                 }
                               ]
                             )
@@ -490,7 +470,7 @@ view model =
 
         description =
             div []
-                [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Running Distance Calculator?" ]
+                [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Cycling Distance Calculator?" ]
                 ]
     in
     PageLayout.view

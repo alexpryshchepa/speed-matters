@@ -415,7 +415,7 @@ view model =
                     InputElement.view
                         { name = "Swimming distance"
                         , units =
-                            ( "swimming-pace-distance"
+                            ( "swimming-time-distance"
                             , [ { unit = UnitService.Distance UnitService.Meter
                                 , name = "Meters"
                                 , hint = "Must be a number, e.g 5000"
@@ -466,7 +466,7 @@ view model =
                     InputElement.view
                         { name = "Swimming pace"
                         , units =
-                            ( ""
+                            ( "swimming-time-pace"
                             , [ { unit = UnitService.Pace UnitService.Per100Meters
                                 , name = "Per meters"
                                 , hint = "You should follow this pattern - MM:SS"
@@ -495,7 +495,7 @@ view model =
                     ResultElement.view
                         { title = "Your time is"
                         , units =
-                            ( "swimming-time-result"
+                            ( ""
                             , []
                             )
                         }
