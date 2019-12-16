@@ -468,14 +468,14 @@ view model =
                                 , hint = "You should follow this pattern - MM:SS"
                                 , shortcut = "min/km"
                                 , regex = ValidatorService.paceRegex
-                                , error = "Wrong value, please make sure you added leading zeros and do not overreach time format (max: 59:59)"
+                                , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
                                 }
                               , { unit = UnitService.Pace UnitService.PerMile
                                 , name = "Per mile"
                                 , hint = "You should follow this pattern - MM:SS"
                                 , shortcut = "min/mi"
                                 , regex = ValidatorService.paceRegex
-                                , error = "Wrong value, please make sure you added leading zeros and do not overreach time format (max: 59:59)"
+                                , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
                                 }
                               ]
                             )

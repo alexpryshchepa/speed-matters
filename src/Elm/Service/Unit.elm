@@ -31,6 +31,8 @@ type Distance
 type Pace
     = PerKilometer
     | PerMile
+    | Per100Meters
+    | Per100Yards
 
 
 type Convertation
@@ -175,6 +177,12 @@ convertPace from to value =
                         |> Maybe.map ConverterService.secToPace
                         |> convertationResult
 
+                Per100Meters ->
+                    ConvertationSkipped
+
+                Per100Yards ->
+                    ConvertationSkipped
+
         PerMile ->
             case to of
                 PerMile ->
@@ -186,6 +194,48 @@ convertPace from to value =
                         |> isSafeInteger
                         |> Maybe.map ConverterService.secToPace
                         |> convertationResult
+
+                Per100Meters ->
+                    ConvertationSkipped
+
+                Per100Yards ->
+                    ConvertationSkipped
+
+        Per100Meters ->
+            case to of
+                Per100Meters ->
+                    ConvertationSkipped
+
+                Per100Yards ->
+                    Just CalculatorService.secPerMToSecPerYd
+                        |> MaybeExtra.andMap (ConverterService.paceToSec value)
+                        |> isSafeInteger
+                        |> Maybe.map ConverterService.secToPace
+                        |> convertationResult
+
+                PerKilometer ->
+                    ConvertationSkipped
+
+                PerMile ->
+                    ConvertationSkipped
+
+        Per100Yards ->
+            case to of
+                Per100Yards ->
+                    ConvertationSkipped
+
+                Per100Meters ->
+                    Just CalculatorService.secPerYdToSecPerM
+                        |> MaybeExtra.andMap (ConverterService.paceToSec value)
+                        |> isSafeInteger
+                        |> Maybe.map ConverterService.secToPace
+                        |> convertationResult
+
+                PerKilometer ->
+                    ConvertationSkipped
+
+                PerMile ->
+                    ConvertationSkipped
 
 
 isSafeFloat : Maybe Float -> Maybe Float
@@ -251,6 +301,12 @@ toId unit =
                 PerMile ->
                     6
 
+                Per100Meters ->
+                    7
+
+                Per100Yards ->
+                    8
+
 
 fromId : Int -> Unit
 fromId id =
@@ -275,6 +331,12 @@ fromId id =
 
         6 ->
             Pace PerMile
+
+        7 ->
+            Pace Per100Meters
+
+        8 ->
+            Pace Per100Yards
 
         _ ->
             Distance Kilometer

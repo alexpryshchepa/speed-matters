@@ -14,8 +14,11 @@ module Elm.Service.Calculator exposing
     , minToH
     , minToSec
     , pace
+    , roundTo
     , secPerKmToSecPerMi
+    , secPerMToSecPerYd
     , secPerMiToSecPerKm
+    , secPerYdToSecPerM
     , secToH
     , secToMin
     , time
@@ -164,6 +167,16 @@ secPerKmToSecPerMi sec =
 secPerMiToSecPerKm : Int -> Int
 secPerMiToSecPerKm sec =
     round <| (/) (toFloat sec) 1.60934
+
+
+secPerYdToSecPerM : Int -> Int
+secPerYdToSecPerM sec =
+    round <| (*) (toFloat sec) 1.093613
+
+
+secPerMToSecPerYd : Int -> Int
+secPerMToSecPerYd sec =
+    round <| (/) (toFloat sec) 1.093613
 
 
 pace : Int -> Float -> Int

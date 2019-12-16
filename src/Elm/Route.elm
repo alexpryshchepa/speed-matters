@@ -15,6 +15,9 @@ import Elm.Page.NotFound as NotFoundPage
 import Elm.Page.RunningDistance as RunningDistancePage
 import Elm.Page.RunningPace as RunningPacePage
 import Elm.Page.RunningTime as RunningTimePage
+import Elm.Page.SwimmingDistance as SwimmingDistancePage
+import Elm.Page.SwimmingPace as SwimmingPacePage
+import Elm.Page.SwimmingTime as SwimmingTimePage
 import Elm.Util.Cmd as CmdUtil
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -32,6 +35,9 @@ type Route
     | RunningPace
     | RunningTime
     | RunningDistance
+    | SwimmingPace
+    | SwimmingTime
+    | SwimmingDistance
     | Contact
 
 
@@ -41,6 +47,9 @@ type Content
     | RunningPaceModel RunningPacePage.Model
     | RunningTimeModel RunningTimePage.Model
     | RunningDistanceModel RunningDistancePage.Model
+    | SwimmingPaceModel SwimmingPacePage.Model
+    | SwimmingTimeModel SwimmingTimePage.Model
+    | SwimmingDistanceModel SwimmingDistancePage.Model
     | ContactModel ContactPage.Model
 
 
@@ -61,6 +70,9 @@ type InternalMsg
     | RunningPaceMsg RunningPacePage.Msg
     | RunningTimeMsg RunningTimePage.Msg
     | RunningDistanceMsg RunningDistancePage.Msg
+    | SwimmingPaceMsg SwimmingPacePage.Msg
+    | SwimmingTimeMsg SwimmingTimePage.Msg
+    | SwimmingDistanceMsg SwimmingDistancePage.Msg
     | ContactMsg ContactPage.Msg
     | ShowSnackbar String
     | HideSnackbar
@@ -90,6 +102,15 @@ init url =
 
         ( runningDistanceModel, runningDistanceCmd ) =
             RunningDistancePage.init
+
+        ( swimmingPaceModel, swimmingPaceCmd ) =
+            SwimmingPacePage.init
+
+        ( swimmingTimeModel, swimmingTimeCmd ) =
+            SwimmingTimePage.init
+
+        ( swimmingDistanceModel, swimmingDistanceCmd ) =
+            SwimmingDistancePage.init
     in
     ( { nav = False
       , return = route /= Home
@@ -110,6 +131,15 @@ init url =
                 RunningDistance ->
                     RunningDistanceModel runningDistanceModel
 
+                SwimmingPace ->
+                    SwimmingPaceModel swimmingPaceModel
+
+                SwimmingTime ->
+                    SwimmingTimeModel swimmingTimeModel
+
+                SwimmingDistance ->
+                    SwimmingDistanceModel swimmingDistanceModel
+
                 Contact ->
                     ContactModel ContactPage.init
       , snackbar = ( "false", "" )
@@ -127,6 +157,15 @@ init url =
             RunningDistance ->
                 Cmd.map (Self << RunningDistanceMsg) runningDistanceCmd
 
+            SwimmingPace ->
+                Cmd.map (Self << SwimmingPaceMsg) swimmingPaceCmd
+
+            SwimmingTime ->
+                Cmd.map (Self << SwimmingTimeMsg) swimmingTimeCmd
+
+            SwimmingDistance ->
+                Cmd.map (Self << SwimmingDistanceMsg) swimmingDistanceCmd
+
             _ ->
                 Cmd.none
         ]
@@ -140,6 +179,9 @@ parser =
         , UrlParser.map RunningPace (UrlParser.s "running" </> UrlParser.s "pace")
         , UrlParser.map RunningTime (UrlParser.s "running" </> UrlParser.s "time")
         , UrlParser.map RunningDistance (UrlParser.s "running" </> UrlParser.s "distance")
+        , UrlParser.map SwimmingPace (UrlParser.s "swimming" </> UrlParser.s "pace")
+        , UrlParser.map SwimmingTime (UrlParser.s "swimming" </> UrlParser.s "time")
+        , UrlParser.map SwimmingDistance (UrlParser.s "swimming" </> UrlParser.s "distance")
         , UrlParser.map Contact (UrlParser.s "contact")
         ]
 
@@ -258,6 +300,84 @@ update msg model =
                     CmdUtil.fire <| Self HideSnackbar
             )
 
+        SwimmingPaceMsg (SwimmingPacePage.Self subMsg) ->
+            case model.content of
+                SwimmingPaceModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            SwimmingPacePage.update subMsg subModel
+                    in
+                    ( { model | content = SwimmingPaceModel updatedModel }
+                    , Cmd.map (Self << SwimmingPaceMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
+        SwimmingPaceMsg (SwimmingPacePage.Parent subMsg) ->
+            ( model
+            , case subMsg of
+                SwimmingPacePage.ShowSnackbar message ->
+                    CmdUtil.fire <| (Self << ShowSnackbar) message
+
+                SwimmingPacePage.HideSnackbar ->
+                    CmdUtil.fire <| Self HideSnackbar
+            )
+
+        SwimmingTimeMsg (SwimmingTimePage.Self subMsg) ->
+            case model.content of
+                SwimmingTimeModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            SwimmingTimePage.update subMsg subModel
+                    in
+                    ( { model | content = SwimmingTimeModel updatedModel }
+                    , Cmd.map (Self << SwimmingTimeMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
+        SwimmingTimeMsg (SwimmingTimePage.Parent subMsg) ->
+            ( model
+            , case subMsg of
+                SwimmingTimePage.ShowSnackbar message ->
+                    CmdUtil.fire <| (Self << ShowSnackbar) message
+
+                SwimmingTimePage.HideSnackbar ->
+                    CmdUtil.fire <| Self HideSnackbar
+            )
+
+        SwimmingDistanceMsg (SwimmingDistancePage.Self subMsg) ->
+            case model.content of
+                SwimmingDistanceModel subModel ->
+                    let
+                        ( updatedModel, cmd ) =
+                            SwimmingDistancePage.update subMsg subModel
+                    in
+                    ( { model | content = SwimmingDistanceModel updatedModel }
+                    , Cmd.map (Self << SwimmingDistanceMsg) cmd
+                    )
+
+                _ ->
+                    ( model
+                    , Cmd.none
+                    )
+
+        SwimmingDistanceMsg (SwimmingDistancePage.Parent subMsg) ->
+            ( model
+            , case subMsg of
+                SwimmingDistancePage.ShowSnackbar message ->
+                    CmdUtil.fire <| (Self << ShowSnackbar) message
+
+                SwimmingDistancePage.HideSnackbar ->
+                    CmdUtil.fire <| Self HideSnackbar
+            )
+
         ContactMsg subMsg ->
             case model.content of
                 ContactModel subModel ->
@@ -308,6 +428,15 @@ routeFromContent content =
         RunningDistanceModel _ ->
             RunningDistance
 
+        SwimmingPaceModel _ ->
+            SwimmingPace
+
+        SwimmingTimeModel _ ->
+            SwimmingTime
+
+        SwimmingDistanceModel _ ->
+            SwimmingDistance
+
         ContactModel _ ->
             Contact
 
@@ -323,6 +452,15 @@ subscriptions model =
 
         RunningDistanceModel content ->
             Sub.map (Self << RunningDistanceMsg) (RunningDistancePage.subscriptions content)
+
+        SwimmingPaceModel content ->
+            Sub.map (Self << SwimmingPaceMsg) (SwimmingPacePage.subscriptions content)
+
+        SwimmingTimeModel content ->
+            Sub.map (Self << SwimmingTimeMsg) (SwimmingTimePage.subscriptions content)
+
+        SwimmingDistanceModel content ->
+            Sub.map (Self << SwimmingDistanceMsg) (SwimmingDistancePage.subscriptions content)
 
         _ ->
             Sub.none
@@ -401,6 +539,48 @@ view model =
                     ]
             }
 
+        SwimmingPaceModel subModel ->
+            { title = "Speed Matters - Swimming"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Swimming pace"
+                        (Html.map
+                            (Self << SwimmingPaceMsg)
+                            (SwimmingPacePage.view subModel)
+                        )
+                    ]
+            }
+
+        SwimmingTimeModel subModel ->
+            { title = "Speed Matters - Swimming"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Swimming time"
+                        (Html.map
+                            (Self << SwimmingTimeMsg)
+                            (SwimmingTimePage.view subModel)
+                        )
+                    ]
+            }
+
+        SwimmingDistanceModel subModel ->
+            { title = "Speed Matters - Swimming"
+            , body =
+                wrapper
+                    [ viewNav
+                        model
+                        "Swimming distance"
+                        (Html.map
+                            (Self << SwimmingDistanceMsg)
+                            (SwimmingDistancePage.view subModel)
+                        )
+                    ]
+            }
+
         ContactModel subModel ->
             { title = "Speed Matters - Contact"
             , body =
@@ -474,10 +654,9 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                 [ h4 [ class "route__group-title" ]
                     [ text "Cycling" ]
                 , div [ class "route__group-links" ]
-                    [ viewLink "/cycling/power" "Estimated Power" "offline_bolt" False
+                    [ viewLink "/cycling/speed" "Speed" "speed" False
                     , viewLink "/cycling/time" "Time" "access_time" False
                     , viewLink "/cycling/distance" "Distance" "trending_flat" False
-                    , viewLink "/cycling/speed" "Speed" "speed" False
                     ]
                 ]
             , div [ class "route__divider" ] []
@@ -485,9 +664,9 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                 [ h4 [ class "route__group-title" ]
                     [ text "Swimming" ]
                 , div [ class "route__group-links" ]
-                    [ viewLink "/swimming/pace" "Pace" "timer" False
-                    , viewLink "/swimming/time" "Time" "access_time" False
-                    , viewLink "/swimming/distance" "Distance" "trending_flat" False
+                    [ viewLink "/swimming/pace" "Pace" "timer" (currentRoute == SwimmingPace)
+                    , viewLink "/swimming/time" "Time" "access_time" (currentRoute == SwimmingTime)
+                    , viewLink "/swimming/distance" "Distance" "trending_flat" (currentRoute == SwimmingDistance)
                     ]
                 ]
             ]

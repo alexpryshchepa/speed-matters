@@ -1,4 +1,4 @@
-module Elm.Page.RunningDistance exposing
+module Elm.Page.SwimmingDistance exposing
     ( ExternalMsg(..)
     , Model
     , Msg(..)
@@ -76,7 +76,7 @@ type alias Storage =
 
 db : String
 db =
-    "running-distance"
+    "swimming-distance"
 
 
 storageEncoder : Storage -> Encode.Value
@@ -105,9 +105,9 @@ init =
     ( { time =
             InputElement.init UnitService.Time
       , pace =
-            InputElement.init <| UnitService.Pace UnitService.PerKilometer
+            InputElement.init <| UnitService.Pace UnitService.Per100Meters
       , result =
-            ResultElement.init <| UnitService.Distance UnitService.Kilometer
+            ResultElement.init <| UnitService.Distance UnitService.Meter
       , isCalculated = False
       }
       -- FIXME
@@ -369,29 +369,29 @@ calculate time pace result =
     case ( ConverterService.timeToSec time.value, ConverterService.paceToSec pace.value ) of
         ( Just t, Just p ) ->
             case ( result.unit, pace.unit ) of
-                ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.distance t p
+                ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.Per100Meters ) ->
+                    CalculationSuccess <| CalculatorService.mToKm (round (CalculatorService.distance t p * 100))
 
-                ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.kmToM (CalculatorService.distance t p))
+                ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.Per100Meters ) ->
+                    CalculationSuccess <| CalculatorService.roundTo 1000 (CalculatorService.distance t p * 100)
 
-                ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.miToKm (CalculatorService.distance t p)
+                ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.Per100Yards ) ->
+                    CalculationSuccess <| CalculatorService.ydToKm (round (CalculatorService.distance t p * 100))
 
-                ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.miToM (CalculatorService.distance t p))
+                ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.Per100Yards ) ->
+                    CalculationSuccess <| toFloat (CalculatorService.ydToM (round (CalculatorService.distance t p * 100)))
 
-                ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.distance t p
+                ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.Per100Yards ) ->
+                    CalculationSuccess <| CalculatorService.ydToMi (round (CalculatorService.distance t p * 100))
 
-                ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.kmToMi (CalculatorService.distance t p)
+                ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.Per100Meters ) ->
+                    CalculationSuccess <| CalculatorService.mToMi (round (CalculatorService.distance t p * 100))
 
-                ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.miToYd (CalculatorService.distance t p))
+                ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.Per100Yards ) ->
+                    CalculationSuccess <| CalculatorService.roundTo 1000 (CalculatorService.distance t p * 100)
 
-                ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.kmToYd (CalculatorService.distance t p))
+                ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.Per100Meters ) ->
+                    CalculationSuccess <| toFloat (CalculatorService.mToYd (round (CalculatorService.distance t p * 100)))
 
                 _ ->
                     error
@@ -412,7 +412,7 @@ view model =
             div []
                 [ Html.map (Self << TimeInputMsg) <|
                     InputElement.view
-                        { name = "Running time"
+                        { name = "Swimming time"
                         , units =
                             ( ""
                             , [ { unit = UnitService.Time
@@ -430,20 +430,20 @@ view model =
                         model.time
                 , Html.map (Self << PaceInputMsg) <|
                     InputElement.view
-                        { name = "Running pace"
+                        { name = "Swimming pace"
                         , units =
                             ( ""
-                            , [ { unit = UnitService.Pace UnitService.PerKilometer
-                                , name = "Per kilometer"
+                            , [ { unit = UnitService.Pace UnitService.Per100Meters
+                                , name = "Per meters"
                                 , hint = "You should follow this pattern - MM:SS"
-                                , shortcut = "min/km"
+                                , shortcut = "min/100m"
                                 , regex = ValidatorService.paceRegex
                                 , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
                                 }
-                              , { unit = UnitService.Pace UnitService.PerMile
-                                , name = "Per mile"
+                              , { unit = UnitService.Pace UnitService.Per100Yards
+                                , name = "Per yards"
                                 , hint = "You should follow this pattern - MM:SS"
-                                , shortcut = "min/mi"
+                                , shortcut = "min/100yd"
                                 , regex = ValidatorService.paceRegex
                                 , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
                                 }
@@ -462,21 +462,21 @@ view model =
                         { title = "Your distance is"
                         , units =
                             ( "running-distance-result"
-                            , [ { name = "Kilometers"
-                                , unit = UnitService.Distance UnitService.Kilometer
-                                , shortcut = "km"
-                                }
-                              , { name = "Meters"
+                            , [ { name = "Meters"
                                 , unit = UnitService.Distance UnitService.Meter
                                 , shortcut = "m"
-                                }
-                              , { name = "Miles"
-                                , unit = UnitService.Distance UnitService.Mile
-                                , shortcut = "mi"
                                 }
                               , { name = "Yards"
                                 , unit = UnitService.Distance UnitService.Yard
                                 , shortcut = "yd"
+                                }
+                              , { name = "Kilometers"
+                                , unit = UnitService.Distance UnitService.Kilometer
+                                , shortcut = "km"
+                                }
+                              , { name = "Miles"
+                                , unit = UnitService.Distance UnitService.Mile
+                                , shortcut = "mi"
                                 }
                               ]
                             )
@@ -486,7 +486,7 @@ view model =
 
         description =
             div []
-                [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Running Distance Calculator?" ]
+                [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Swimming Distance Calculator?" ]
                 ]
     in
     PageLayout.view

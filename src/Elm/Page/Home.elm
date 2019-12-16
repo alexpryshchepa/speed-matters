@@ -61,17 +61,14 @@ view model =
                 "Cycling"
                 "Does speed matters for you? You are in the right place!"
                 "images/icons/cycling.svg"
-                [ { label = "Estimated power"
-                  , link = "/cycling/power"
+                [ { label = "Speed"
+                  , link = "/cycling/speed"
                   }
                 , { label = "Time"
                   , link = "/cycling/time"
                   }
                 , { label = "Distance"
                   , link = "/cycling/distance"
-                  }
-                , { label = "Speed"
-                  , link = "/cycling/speed"
                   }
                 ]
             , viewCard
