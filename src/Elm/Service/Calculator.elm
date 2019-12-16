@@ -129,7 +129,7 @@ hToSec =
 
 minToH : Int -> Int
 minToH min =
-    (//) min 60
+    floor <| (/) (toFloat min) 60
 
 
 minToSec : Int -> Int
@@ -139,12 +139,12 @@ minToSec =
 
 secToH : Int -> Int
 secToH sec =
-    (//) sec 3600
+    floor <| (/) (toFloat sec) 3600
 
 
 secToMin : Int -> Int
 secToMin sec =
-    (//) sec 60
+    floor <| (/) (toFloat sec) 60
 
 
 time : Float -> Int -> Int

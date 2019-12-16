@@ -8,6 +8,7 @@ module Elm.Service.Unit exposing
     , toId
     )
 
+import Basics.Extra as BasicsExtra
 import Elm.Service.Calculator as CalculatorService
 import Elm.Service.Converter as ConverterService
 import Maybe.Extra as MaybeExtra
@@ -60,18 +61,24 @@ convertDistance from to value =
                     ConvertationSkipped
 
                 Meter ->
-                    Just (String.fromInt << CalculatorService.kmToM)
+                    Just CalculatorService.kmToM
                         |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeInteger
+                        |> Maybe.map String.fromInt
                         |> convertationResult
 
                 Mile ->
-                    Just (String.fromFloat << CalculatorService.kmToMi)
+                    Just CalculatorService.kmToMi
                         |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
                         |> convertationResult
 
                 Yard ->
-                    Just (String.fromInt << CalculatorService.kmToYd)
+                    Just CalculatorService.kmToYd
                         |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeInteger
+                        |> Maybe.map String.fromInt
                         |> convertationResult
 
         Meter ->
@@ -80,18 +87,24 @@ convertDistance from to value =
                     ConvertationSkipped
 
                 Kilometer ->
-                    Just (String.fromFloat << CalculatorService.mToKm)
+                    Just CalculatorService.mToKm
                         |> MaybeExtra.andMap (String.toInt value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
                         |> convertationResult
 
                 Mile ->
-                    Just (String.fromFloat << CalculatorService.mToMi)
+                    Just CalculatorService.mToMi
                         |> MaybeExtra.andMap (String.toInt value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
                         |> convertationResult
 
                 Yard ->
-                    Just (String.fromInt << CalculatorService.mToYd)
+                    Just CalculatorService.mToYd
                         |> MaybeExtra.andMap (String.toInt value)
+                        |> isSafeInteger
+                        |> Maybe.map String.fromInt
                         |> convertationResult
 
         Mile ->
@@ -100,18 +113,24 @@ convertDistance from to value =
                     ConvertationSkipped
 
                 Kilometer ->
-                    Just (String.fromFloat << CalculatorService.miToKm)
+                    Just CalculatorService.miToKm
                         |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
                         |> convertationResult
 
                 Meter ->
-                    Just (String.fromInt << CalculatorService.miToM)
+                    Just CalculatorService.miToM
                         |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeInteger
+                        |> Maybe.map String.fromInt
                         |> convertationResult
 
                 Yard ->
-                    Just (String.fromInt << CalculatorService.miToYd)
+                    Just CalculatorService.miToYd
                         |> MaybeExtra.andMap (String.toFloat value)
+                        |> isSafeInteger
+                        |> Maybe.map String.fromInt
                         |> convertationResult
 
         Yard ->
@@ -120,18 +139,24 @@ convertDistance from to value =
                     ConvertationSkipped
 
                 Kilometer ->
-                    Just (String.fromFloat << CalculatorService.ydToKm)
+                    Just CalculatorService.ydToKm
                         |> MaybeExtra.andMap (String.toInt value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
                         |> convertationResult
 
                 Meter ->
-                    Just (String.fromInt << CalculatorService.ydToM)
+                    Just CalculatorService.ydToM
                         |> MaybeExtra.andMap (String.toInt value)
+                        |> isSafeInteger
+                        |> Maybe.map String.fromInt
                         |> convertationResult
 
                 Mile ->
-                    Just (String.fromFloat << CalculatorService.ydToMi)
+                    Just CalculatorService.ydToMi
                         |> MaybeExtra.andMap (String.toInt value)
+                        |> isSafeFloat
+                        |> Maybe.map String.fromFloat
                         |> convertationResult
 
 
@@ -144,8 +169,10 @@ convertPace from to value =
                     ConvertationSkipped
 
                 PerMile ->
-                    Just (ConverterService.secToPace << CalculatorService.secPerKmToSecPerMi)
+                    Just CalculatorService.secPerKmToSecPerMi
                         |> MaybeExtra.andMap (ConverterService.paceToSec value)
+                        |> isSafeInteger
+                        |> Maybe.map ConverterService.secToPace
                         |> convertationResult
 
         PerMile ->
@@ -154,9 +181,39 @@ convertPace from to value =
                     ConvertationSkipped
 
                 PerKilometer ->
-                    Just (ConverterService.secToPace << CalculatorService.secPerMiToSecPerKm)
+                    Just CalculatorService.secPerMiToSecPerKm
                         |> MaybeExtra.andMap (ConverterService.paceToSec value)
+                        |> isSafeInteger
+                        |> Maybe.map ConverterService.secToPace
                         |> convertationResult
+
+
+isSafeFloat : Maybe Float -> Maybe Float
+isSafeFloat num =
+    case num of
+        Just float ->
+            if BasicsExtra.isSafeInteger <| floor float then
+                num
+
+            else
+                Nothing
+
+        Nothing ->
+            Nothing
+
+
+isSafeInteger : Maybe Int -> Maybe Int
+isSafeInteger num =
+    case num of
+        Just integer ->
+            if BasicsExtra.isSafeInteger integer then
+                num
+
+            else
+                Nothing
+
+        Nothing ->
+            Nothing
 
 
 convertationResult : Maybe String -> Convertation

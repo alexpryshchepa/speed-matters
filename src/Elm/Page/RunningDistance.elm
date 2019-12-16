@@ -8,6 +8,7 @@ module Elm.Page.RunningDistance exposing
     , view
     )
 
+import Basics.Extra as BasicsExtra
 import Elm.Element.Input as InputElement
 import Elm.Element.Result as ResultElement
 import Elm.Layout.Page as PageLayout
@@ -114,31 +115,11 @@ init =
     )
 
 
-setInputValue : String -> InputElement.Model -> InputElement.Model
-setInputValue value model =
-    { model | value = value }
-
-
-setInputUnit : UnitService.Unit -> InputElement.Model -> InputElement.Model
-setInputUnit unit model =
-    { model | unit = unit }
-
-
-setResultValue : String -> ResultElement.Model -> ResultElement.Model
-setResultValue value model =
-    { model | value = value }
-
-
-setResultUnit : UnitService.Unit -> ResultElement.Model -> ResultElement.Model
-setResultUnit unit model =
-    { model | unit = unit }
-
-
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         clearResult =
-            setResultValue "..." model.result
+            ResultElement.setValue "..." model.result
     in
     case msg of
         TimeInputMsg (InputElement.Self subMsg) ->
@@ -171,6 +152,11 @@ update msg model =
                         , Cmd.none
                         )
 
+                InputElement.ConvertationFailed ->
+                    ( { model | result = ResultElement.setValue "" model.result }
+                    , Cmd.none
+                    )
+
         PaceInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
@@ -182,6 +168,11 @@ update msg model =
 
         PaceInputMsg (InputElement.Parent subMsg) ->
             case subMsg of
+                InputElement.ShowSnackbar message ->
+                    ( model
+                    , CmdUtil.fire <| (Parent << ShowSnackbar) message
+                    )
+
                 InputElement.ValueChanged old new ->
                     if model.isCalculated then
                         ( { model
@@ -196,8 +187,8 @@ update msg model =
                         , Cmd.none
                         )
 
-                _ ->
-                    ( model
+                InputElement.ConvertationFailed ->
+                    ( { model | result = ResultElement.setValue "" model.result }
                     , Cmd.none
                     )
 
@@ -226,6 +217,7 @@ update msg model =
                 error message =
                     ( { model
                         | result = clearResult
+                        , isCalculated = False
                       }
                     , CmdUtil.fire <| (Parent << ShowSnackbar) message
                     )
@@ -234,7 +226,7 @@ update msg model =
                     ( { model
                         | isCalculated = True
                         , result =
-                            setResultValue
+                            ResultElement.setValue
                                 (String.fromFloat float)
                                 model.result
                       }
@@ -266,17 +258,21 @@ update msg model =
                             calculate model.time model.pace model.result
                     in
                     case calculation of
-                        CalculationSuccess sec ->
-                            success sec
+                        CalculationSuccess distance ->
+                            if BasicsExtra.isSafeInteger <| floor distance then
+                                success distance
+
+                            else
+                                error "The distance is out of range, please insert smaller values of time or pace"
 
                         CalculationError message ->
                             error message
 
         ResetForm ->
             ( { model
-                | time = setInputValue "" model.time
-                , pace = setInputValue "" model.pace
-                , result = setResultValue "..." model.result
+                | time = InputElement.setValue "" model.time
+                , pace = InputElement.setValue "" model.pace
+                , result = ResultElement.setValue "..." model.result
                 , isCalculated = False
               }
             , Port.saveToLocalStorage
@@ -305,7 +301,6 @@ update msg model =
                         updatedTimeInput =
                             { time
                                 | value = storage.time
-                                , unit = UnitService.fromId storage.distanceUnit
                             }
 
                         updatedPaceInput =

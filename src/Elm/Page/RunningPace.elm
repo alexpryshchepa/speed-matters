@@ -8,6 +8,7 @@ module Elm.Page.RunningPace exposing
     , view
     )
 
+import Basics.Extra as BasicsExtra
 import Elm.Element.Input as InputElement
 import Elm.Element.Result as ResultElement
 import Elm.Layout.Page as PageLayout
@@ -114,31 +115,11 @@ init =
     )
 
 
-setInputValue : String -> InputElement.Model -> InputElement.Model
-setInputValue value model =
-    { model | value = value }
-
-
-setInputUnit : UnitService.Unit -> InputElement.Model -> InputElement.Model
-setInputUnit unit model =
-    { model | unit = unit }
-
-
-setResultValue : String -> ResultElement.Model -> ResultElement.Model
-setResultValue value model =
-    { model | value = value }
-
-
-setResultUnit : UnitService.Unit -> ResultElement.Model -> ResultElement.Model
-setResultUnit unit model =
-    { model | unit = unit }
-
-
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         clearResult =
-            setResultValue "..." model.result
+            ResultElement.setValue "..." model.result
     in
     case msg of
         DistanceInputMsg (InputElement.Self subMsg) ->
@@ -171,6 +152,11 @@ update msg model =
                         , Cmd.none
                         )
 
+                InputElement.ConvertationFailed ->
+                    ( { model | result = ResultElement.setValue "" model.result }
+                    , Cmd.none
+                    )
+
         TimeInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
@@ -182,6 +168,11 @@ update msg model =
 
         TimeInputMsg (InputElement.Parent subMsg) ->
             case subMsg of
+                InputElement.ShowSnackbar message ->
+                    ( model
+                    , CmdUtil.fire <| (Parent << ShowSnackbar) message
+                    )
+
                 InputElement.ValueChanged old new ->
                     if model.isCalculated then
                         ( { model
@@ -196,8 +187,8 @@ update msg model =
                         , Cmd.none
                         )
 
-                _ ->
-                    ( model
+                InputElement.ConvertationFailed ->
+                    ( { model | result = ResultElement.setValue "" model.result }
                     , Cmd.none
                     )
 
@@ -226,6 +217,7 @@ update msg model =
                 error message =
                     ( { model
                         | result = clearResult
+                        , isCalculated = False
                       }
                     , CmdUtil.fire <| (Parent << ShowSnackbar) message
                     )
@@ -234,7 +226,7 @@ update msg model =
                     ( { model
                         | isCalculated = True
                         , result =
-                            setResultValue
+                            ResultElement.setValue
                                 (ConverterService.secToPace int)
                                 model.result
                       }
@@ -267,16 +259,20 @@ update msg model =
                     in
                     case calculation of
                         CalculationSuccess sec ->
-                            success sec
+                            if BasicsExtra.isSafeInteger sec then
+                                success sec
+
+                            else
+                                error "The pace is out of range, please insert smaller values of distance or time"
 
                         CalculationError message ->
                             error message
 
         ResetForm ->
             ( { model
-                | distance = setInputValue "" model.distance
-                , time = setInputValue "" model.time
-                , result = setResultValue "..." model.result
+                | distance = InputElement.setValue "" model.distance
+                , time = InputElement.setValue "" model.time
+                , result = ResultElement.setValue "..." model.result
                 , isCalculated = False
               }
             , Port.saveToLocalStorage
@@ -379,13 +375,13 @@ calculate distance time result =
                     CalculationSuccess <| CalculatorService.pace t d
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.mToKm (truncate d))
+                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.mToKm (round d))
 
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerMile ) ->
                     CalculationSuccess <| CalculatorService.pace t (CalculatorService.kmToMi d)
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.mToMi (truncate d))
+                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.mToMi (round d))
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerMile ) ->
                     CalculationSuccess <| CalculatorService.pace t d
@@ -394,10 +390,10 @@ calculate distance time result =
                     CalculationSuccess <| CalculatorService.pace t (CalculatorService.miToKm d)
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.ydToMi (truncate d))
+                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.ydToMi (round d))
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.ydToKm (truncate d))
+                    CalculationSuccess <| CalculatorService.pace t (CalculatorService.ydToKm (round d))
 
                 _ ->
                     error

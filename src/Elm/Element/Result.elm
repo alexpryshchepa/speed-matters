@@ -3,6 +3,7 @@ module Elm.Element.Result exposing
     , Model
     , Msg(..)
     , init
+    , setValue
     , update
     , view
     )
@@ -60,6 +61,15 @@ update msg model =
             ( { model | unit = unit }
             , CmdUtil.fire (Parent UnitChanged)
             )
+
+
+
+-- Lenses
+
+
+setValue : String -> Model -> Model
+setValue value model =
+    { model | value = value }
 
 
 view : Settings -> Model -> Html Msg

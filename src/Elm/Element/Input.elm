@@ -3,6 +3,7 @@ module Elm.Element.Input exposing
     , Model
     , Msg(..)
     , init
+    , setValue
     , update
     , view
     )
@@ -39,6 +40,7 @@ type InternalMsg
 type ExternalMsg
     = ShowSnackbar String
     | ValueChanged String String
+    | ConvertationFailed
 
 
 type alias Settings =
@@ -98,14 +100,17 @@ update msg model =
                     CmdUtil.fire <| (Self << ChangeValue) v
 
                 UnitService.ConvertationSkipped ->
-                    CmdUtil.fire <| (Self << ChangeValue) model.value
+                    Cmd.none
 
                 UnitService.ConvertationFailed ->
                     if String.isEmpty model.value then
                         Cmd.none
 
                     else
-                        CmdUtil.fire <| (Parent << ShowSnackbar) "Cannot convert invalid value"
+                        Cmd.batch
+                            [ CmdUtil.fire <| (Parent << ShowSnackbar) "Cannot convert this value"
+                            , CmdUtil.fire <| Parent ConvertationFailed
+                            ]
             )
 
         UpdateValue unit value ->
@@ -129,6 +134,15 @@ update msg model =
             ( { model | isValid = bool }
             , Cmd.none
             )
+
+
+
+-- Lenses
+
+
+setValue : String -> Model -> Model
+setValue value model =
+    { model | value = value }
 
 
 view : Settings -> Model -> Html Msg
