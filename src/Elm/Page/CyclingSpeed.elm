@@ -44,7 +44,7 @@ type InternalMsg
     = DistanceInputMsg InputElement.Msg
     | TimeInputMsg InputElement.Msg
     | ResultMsg ResultElement.Msg
-    | CalculatePace
+    | CalculateSpeed
     | ResetForm
     | LocalStorageResponse Encode.Value
     | GetFromLocalStorage
@@ -157,6 +157,15 @@ update msg model =
                     , Cmd.none
                     )
 
+                InputElement.UnitChanged ->
+                    ( model
+                    , if model.isCalculated then
+                        CmdUtil.fire <| Self CalculateSpeed
+
+                      else
+                        Cmd.none
+                    )
+
         TimeInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
@@ -192,6 +201,15 @@ update msg model =
                     , Cmd.none
                     )
 
+                InputElement.UnitChanged ->
+                    ( model
+                    , if model.isCalculated then
+                        CmdUtil.fire <| Self CalculateSpeed
+
+                      else
+                        Cmd.none
+                    )
+
         ResultMsg (ResultElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
@@ -206,13 +224,13 @@ update msg model =
             , case subMsg of
                 ResultElement.UnitChanged ->
                     if model.isCalculated then
-                        CmdUtil.fire <| Self CalculatePace
+                        CmdUtil.fire <| Self CalculateSpeed
 
                     else
                         Cmd.none
             )
 
-        CalculatePace ->
+        CalculateSpeed ->
             let
                 error message =
                     ( { model
@@ -316,7 +334,7 @@ update msg model =
                         , result = updatedResult
                       }
                     , if storage.isCalculated then
-                        CmdUtil.fire <| Self CalculatePace
+                        CmdUtil.fire <| Self CalculateSpeed
 
                       else
                         Cmd.none
@@ -486,7 +504,7 @@ view model =
         { form = form
         , result = result
         , calculate =
-            { msg = Self CalculatePace
+            { msg = Self CalculateSpeed
             , isCalculated = model.isCalculated
             }
         , reset = Self ResetForm

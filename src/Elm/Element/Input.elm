@@ -41,6 +41,7 @@ type ExternalMsg
     = ShowSnackbar String
     | ValueChanged String String
     | ConvertationFailed
+    | UnitChanged
 
 
 type alias Settings =
@@ -95,22 +96,25 @@ update msg model =
             ( { model
                 | unit = unit
               }
-            , case convert of
-                UnitService.Converted v ->
-                    CmdUtil.fire <| (Self << ChangeValue) v
+            , Cmd.batch
+                [ CmdUtil.fire <| Parent UnitChanged
+                , case convert of
+                    UnitService.Converted v ->
+                        CmdUtil.fire <| (Self << ChangeValue) v
 
-                UnitService.ConvertationSkipped ->
-                    Cmd.none
-
-                UnitService.ConvertationFailed ->
-                    if String.isEmpty model.value then
+                    UnitService.ConvertationSkipped ->
                         Cmd.none
 
-                    else
-                        Cmd.batch
-                            [ CmdUtil.fire <| (Parent << ShowSnackbar) "Cannot convert this value"
-                            , CmdUtil.fire <| Parent ConvertationFailed
-                            ]
+                    UnitService.ConvertationFailed ->
+                        if String.isEmpty model.value then
+                            Cmd.none
+
+                        else
+                            Cmd.batch
+                                [ CmdUtil.fire <| (Parent << ShowSnackbar) "Cannot convert this value"
+                                , CmdUtil.fire <| Parent ConvertationFailed
+                                ]
+                ]
             )
 
         UpdateValue unit value ->

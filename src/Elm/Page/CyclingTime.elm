@@ -157,6 +157,15 @@ update msg model =
                     , Cmd.none
                     )
 
+                InputElement.UnitChanged ->
+                    ( model
+                    , if model.isCalculated then
+                        CmdUtil.fire <| Self CalculateTime
+
+                      else
+                        Cmd.none
+                    )
+
         SpeedInputMsg (InputElement.Self subMsg) ->
             let
                 ( updatedModel, cmd ) =
@@ -190,6 +199,15 @@ update msg model =
                 InputElement.ConvertationFailed ->
                     ( { model | result = ResultElement.setValue "" model.result }
                     , Cmd.none
+                    )
+
+                InputElement.UnitChanged ->
+                    ( model
+                    , if model.isCalculated then
+                        CmdUtil.fire <| Self CalculateTime
+
+                      else
+                        Cmd.none
                     )
 
         ResultMsg (ResultElement.Self subMsg) ->
