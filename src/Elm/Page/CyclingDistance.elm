@@ -107,7 +107,7 @@ init =
       , speed =
             InputElement.init <| UnitService.Speed UnitService.KilometersPerHour
       , result =
-            ResultElement.init <| UnitService.Distance UnitService.Meter
+            ResultElement.init <| UnitService.Distance UnitService.Kilometer
       , isCalculated = False
       }
       -- FIXME
