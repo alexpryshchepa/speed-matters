@@ -45,7 +45,7 @@ view model =
         [ div [ class "home-page__cards" ]
             [ viewCard
                 "Running"
-                "What pace should be to run a marathon less than 4 hours? How much time take to run 100 meters? Calculate it here."
+                "What pace should be to run a marathon less than 4 hours? How much time take to run 100 meters? Calculate it here"
                 "images/icons/running.svg"
                 [ { label = "Pace"
                   , link = "/running/pace"
@@ -59,7 +59,7 @@ view model =
                 ]
             , viewCard
                 "Cycling"
-                "Does speed matters for you? You are in the right place!"
+                "Does speed matter for you? Find out speed, time or distance for your next ride"
                 "images/icons/cycling.svg"
                 [ { label = "Speed"
                   , link = "/cycling/speed"
@@ -73,7 +73,7 @@ view model =
                 ]
             , viewCard
                 "Swimming"
-                "What pace to choose for your next swim? Try this stuff"
+                "What pace to choose for your next swim session? Wanna know Michael Phelps pace? Get it here"
                 "images/icons/swimming.svg"
                 [ { label = "Pace"
                   , link = "/swimming/pace"
@@ -86,9 +86,21 @@ view model =
                   }
                 ]
             ]
-        , div [ class "home-page__heading" ]
+        , div [ class "home-page__description" ]
             [ p [ class "mdc-typography mdc-typography--body1" ]
-                [ text "This application combines calculators for running, cycling and swimming. With their help, you can easily calculate the various metrics in these sports. Preparing for the first marathon distance, the next open water race or a long bike ride, you will most likely need to calculate the pace, speed, distance. For both the amateur and the professional athlete, it is very important to consider the speed, distance and time when building the training process. If you want to plan your result in upcoming competitions or find out the right pace for a personal record, our calculator will help you with this. It will be convenient for building training plans in the triathlon, as well as for all disciplines separately." ]
+                [ text
+                    """
+                    Speed Matters app combines calculators for running, cycling and swimming.
+                    With their help, you can easily calculate the various metrics in these sports.
+                    Preparing for the first marathon distance, the next open water race or a long bike ride,
+                    you will most likely need to calculate the pace, speed, distance or time.
+                    For both the amateurs and the professional athletes,
+                    one of the most common routines is to calculate their sport metrics.
+                    If you want to plan your result in upcoming competitions or find out the right pace for a personal record,
+                    our app will help you with this.
+                    It will be convenient for building training plans in the triathlon, as well as for each discipline separately.
+                    """
+                ]
             ]
         ]
 

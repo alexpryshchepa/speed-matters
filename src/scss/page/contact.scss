@@ -1,7 +1,99 @@
 .contact-page {
+  $p: &;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   padding: 48px;
+  background-color: rgba($primary-light-color, .5);
+  height: 100%;
+
+  @include tablet {
+    padding: 24px;
+  }
 
   @include mobile {
     padding: 16px;
+  }
+
+  &__content {
+    flex: 1;
+    padding: 48px;
+    margin-right: 48px;
+
+    @include tablet {
+      padding: 24px;
+      margin-right: 24px;
+    }
+
+    @include mobile {
+      padding: 12px;
+      margin-right: 0;
+    }
+  }
+
+  &__image {
+    width: 50%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url('/images/icons/racing.svg');
+    align-self: stretch;
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  &__link {
+    color: $accent-color;
+    cursor: pointer;
+  }
+
+  &__button {
+    will-change: transform;
+    transition:
+      transform .2s ease-out,
+      opacity .2s ease-out,
+      visibility .2s ease-out;
+  }
+
+  &__email {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%) translateY(24px);
+    color: $primary-dark-color;
+    opacity: 0;
+    will-change: transform;
+    visibility: hidden;
+
+    transition:
+      transform .2s ease-out,
+      opacity .2s ease-out,
+      visibility .2s ease-out;
+  }
+
+  &__contact {
+    position: relative;
+    margin-top: 48px;
+
+    @include mobile {
+      margin-top: 24px;
+    }
+
+    &.is-visible {
+      #{$p}__button {
+        transform: translateY(-24px);
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      #{$p}__email {
+        transform: translateY(-50%);
+        opacity: 1;
+        visibility: visible;
+      }
+    }
   }
 }

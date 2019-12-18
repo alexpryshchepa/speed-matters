@@ -117,10 +117,6 @@ init =
 
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        clearResult =
-            ResultElement.setValue "..." model.result
-    in
     case msg of
         DistanceInputMsg (InputElement.Self subMsg) ->
             let
@@ -142,7 +138,7 @@ update msg model =
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
-                            , result = clearResult
+                            , result = ResultElement.clearValue model.result
                           }
                         , Cmd.none
                         )
@@ -153,7 +149,7 @@ update msg model =
                         )
 
                 InputElement.ConvertationFailed ->
-                    ( { model | result = ResultElement.setValue "" model.result }
+                    ( { model | result = ResultElement.clearValue model.result }
                     , Cmd.none
                     )
 
@@ -186,7 +182,7 @@ update msg model =
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
-                            , result = clearResult
+                            , result = ResultElement.clearValue model.result
                           }
                         , Cmd.none
                         )
@@ -197,7 +193,7 @@ update msg model =
                         )
 
                 InputElement.ConvertationFailed ->
-                    ( { model | result = ResultElement.setValue "" model.result }
+                    ( { model | result = ResultElement.clearValue model.result }
                     , Cmd.none
                     )
 
@@ -234,7 +230,7 @@ update msg model =
             let
                 error message =
                     ( { model
-                        | result = clearResult
+                        | result = ResultElement.clearValue model.result
                         , isCalculated = False
                       }
                     , CmdUtil.fire <| (Parent << ShowSnackbar) message
@@ -281,7 +277,7 @@ update msg model =
                                 success sec
 
                             else
-                                error "The pace is out of range, please insert smaller values of distance or time"
+                                error <| ValidatorService.outOfRange "pace"
 
                         CalculationError message ->
                             error message
@@ -290,7 +286,7 @@ update msg model =
             ( { model
                 | distance = InputElement.setValue "" model.distance
                 , time = InputElement.setValue "" model.time
-                , result = ResultElement.setValue "..." model.result
+                , result = ResultElement.clearValue model.result
                 , isCalculated = False
               }
             , Port.saveToLocalStorage
@@ -355,37 +351,31 @@ validate : InputElement.Model -> InputElement.Model -> Validation
 validate distance time =
     case ( distance.isValid, time.isValid ) of
         ( False, False ) ->
-            ValidationError "Both fields are not valid, please take a look at the hints"
-
-        ( True, False ) ->
-            ValidationError "Not valid value for time"
+            ValidationError ValidatorService.fieldsNotValid
 
         ( False, True ) ->
-            ValidationError "Not valid value for distance"
+            ValidationError <| ValidatorService.fieldNotValid "distance"
+
+        ( True, False ) ->
+            ValidationError <| ValidatorService.fieldNotValid "time"
 
         ( True, True ) ->
-            -- Fields are valid but can be empty, so check emptyness next
             case ( not <| String.isEmpty distance.value, not <| String.isEmpty time.value ) of
                 ( False, False ) ->
-                    ValidationError "Both fields are empty. Please fill the fields to calculate pace"
-
-                ( True, False ) ->
-                    ValidationError "Please add time value"
+                    ValidationError <| ValidatorService.fieldsEmpty "pace"
 
                 ( False, True ) ->
-                    ValidationError "Please add distance value"
+                    ValidationError <| ValidatorService.fieldEmpty "distance"
+
+                ( True, False ) ->
+                    ValidationError <| ValidatorService.fieldEmpty "time"
 
                 ( True, True ) ->
-                    -- Fields are valid and have value, so we can try to calculate pace
                     ValidationSuccess
 
 
 calculate : InputElement.Model -> InputElement.Model -> ResultElement.Model -> Calculation
 calculate distance time result =
-    let
-        error =
-            CalculationError "Something went wrong. Please contact us"
-    in
     case ( String.toFloat distance.value, ConverterService.timeToSec time.value ) of
         ( Just d, Just t ) ->
             case ( distance.unit, result.unit ) of
@@ -414,10 +404,10 @@ calculate distance time result =
                     CalculationSuccess <| CalculatorService.pace t (CalculatorService.ydToKm (round d))
 
                 _ ->
-                    error
+                    CalculationError ValidatorService.unhandledException
 
         _ ->
-            error
+            CalculationError ValidatorService.unhandledException
 
 
 subscriptions : Model -> Sub Msg
@@ -429,106 +419,164 @@ view : Model -> Html Msg
 view model =
     let
         form =
-            div []
-                [ Html.map (Self << DistanceInputMsg) <|
-                    InputElement.view
-                        { name = "Running distance"
-                        , units =
-                            ( "running-pace-distance"
-                            , [ { unit = UnitService.Distance UnitService.Kilometer
-                                , name = "Kilometers"
-                                , hint = "Must be a number, e.g 21.098"
-                                , shortcut = "km"
-                                , regex = ValidatorService.floatRegex
-                                , error = "Wrong value, please make sure you value is float or integer number e.g. 42.195"
-                                }
-                              , { unit = UnitService.Distance UnitService.Meter
-                                , name = "Meters"
-                                , hint = "Must be a number, e.g 5000"
-                                , shortcut = "m"
-                                , regex = ValidatorService.intRegex
-                                , error = "Wrong value, please make sure you value is integer number e.g. 10000"
-                                }
-                              , { unit = UnitService.Distance UnitService.Mile
-                                , name = "Miles"
-                                , hint = "Must be a number, e.g 26.1"
-                                , shortcut = "mi"
-                                , regex = ValidatorService.floatRegex
-                                , error = "Wrong value, please make sure you value is float or integer number e.g. 42.195"
-                                }
-                              , { unit = UnitService.Distance UnitService.Yard
-                                , name = "Yards"
-                                , hint = "Must be a number, e.g 1000"
-                                , shortcut = "yd"
-                                , regex = ValidatorService.intRegex
-                                , error = "Wrong value, please make sure you value is integer number e.g. 10000"
-                                }
-                              ]
-                            )
-                        , links =
-                            [ { name = "Half Marathon"
-                              , value = "21.098"
-                              , unit = UnitService.Distance UnitService.Kilometer
-                              }
-                            , { name = "Marathon"
-                              , value = "42195"
-                              , unit = UnitService.Distance UnitService.Meter
-                              }
-                            ]
-                        }
-                        model.distance
-                , Html.map (Self << TimeInputMsg) <|
-                    InputElement.view
-                        { name = "Running time"
-                        , units =
-                            ( "running-pace-time"
-                            , [ { unit = UnitService.Time
-                                , name = ""
-                                , hint = "You should follow this pattern - HH:MM:SS"
-                                , shortcut = ""
-                                , regex = ValidatorService.timeRegex
-                                , error = "Wrong value, please make sure you added leading zeros and followe HH:MM:SS (hours:minutes:seconds) pattern"
-                                }
-                              ]
-                            )
-                        , links = []
-                        }
-                        model.time
-                ]
+            [ Html.map (Self << DistanceInputMsg) <|
+                InputElement.view
+                    { name = "Running distance"
+                    , units =
+                        ( "running-pace-distance"
+                        , [ { unit = UnitService.Distance UnitService.Kilometer
+                            , name = "Kilometers"
+                            , hint = ValidatorService.floatHint
+                            , shortcut = "km"
+                            , regex = ValidatorService.floatRegex
+                            , error = ValidatorService.floatError
+                            }
+                          , { unit = UnitService.Distance UnitService.Meter
+                            , name = "Meters"
+                            , hint = ValidatorService.integerHint
+                            , shortcut = "m"
+                            , regex = ValidatorService.intRegex
+                            , error = ValidatorService.integerError
+                            }
+                          , { unit = UnitService.Distance UnitService.Mile
+                            , name = "Miles"
+                            , hint = ValidatorService.floatHint
+                            , shortcut = "mi"
+                            , regex = ValidatorService.floatRegex
+                            , error = ValidatorService.floatError
+                            }
+                          , { unit = UnitService.Distance UnitService.Yard
+                            , name = "Yards"
+                            , hint = ValidatorService.integerHint
+                            , shortcut = "yd"
+                            , regex = ValidatorService.intRegex
+                            , error = ValidatorService.integerError
+                            }
+                          ]
+                        )
+                    , links =
+                        [ { name = "Half Marathon"
+                          , value = "21.098"
+                          , unit = UnitService.Distance UnitService.Kilometer
+                          }
+                        , { name = "Marathon"
+                          , value = "42195"
+                          , unit = UnitService.Distance UnitService.Meter
+                          }
+                        ]
+                    }
+                    model.distance
+            , Html.map (Self << TimeInputMsg) <|
+                InputElement.view
+                    { name = "Running time"
+                    , units =
+                        ( "running-pace-time"
+                        , [ { unit = UnitService.Time
+                            , name = ""
+                            , hint = ValidatorService.timeHint
+                            , shortcut = ""
+                            , regex = ValidatorService.timeRegex
+                            , error = ValidatorService.timeError
+                            }
+                          ]
+                        )
+                    , links = []
+                    }
+                    model.time
+            ]
 
         result =
-            div []
-                [ Html.map (Self << ResultMsg) <|
-                    ResultElement.view
-                        { title = "Your pace is"
-                        , units =
-                            ( "running-pace-result"
-                            , [ { name = "Per kilometer"
-                                , unit = UnitService.Pace UnitService.PerKilometer
-                                , shortcut = "min/km"
-                                }
-                              , { name = "Per mile"
-                                , unit = UnitService.Pace UnitService.PerMile
-                                , shortcut = "min/mi"
-                                }
-                              ]
-                            )
-                        }
-                        model.result
-                ]
+            [ Html.map (Self << ResultMsg) <|
+                ResultElement.view
+                    { title = "Pace is"
+                    , units =
+                        ( "running-pace-result"
+                        , [ { name = "Per kilometer"
+                            , unit = UnitService.Pace UnitService.PerKilometer
+                            , shortcut = "min/km"
+                            }
+                          , { name = "Per mile"
+                            , unit = UnitService.Pace UnitService.PerMile
+                            , shortcut = "min/mi"
+                            }
+                          ]
+                        )
+                    }
+                    model.result
+            ]
 
         description =
-            div []
-                [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Pace Calculator?" ]
-                , p [ class "mdc-typography mdc-typography--body2" ] [ text "Pace calculators are useful for both new runners and expert runners. Whether you’re running your first race, trying to PR, or going on a training run, knowing your pace can help you train and run better." ]
-                , h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "What Can You Calculate with a Pace Calculator?" ]
-                , ul []
-                    [ li [ class "mdc-typography mdc-typography--body2" ] [ text "Determine how fast your pace should be if you have a certain finish time for a desired distance or race. For example, find out what pace you need to keep to run a 28-minute 5K or a sub-2:00 half marathon." ]
-                    , li [ class "mdc-typography mdc-typography--body2" ] [ text "Determine what your pace was for your training run around the neighborhood or track. For example, find out how fast your pace was for that 46-minute 5-mile training run." ]
-                    ]
-                , h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Got Your Calculated Pace?" ]
-                , p [ class "mdc-typography mdc-typography--body2" ] [ text "Ready to start training? Learn how to improve your form and technique and find running workouts suited to your needs." ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "What is running pace?" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    Pace is the term that runners use for the way they measure their speed while running.
+                    While speed is generally measured as miles per hour or kilometers per hour,
+                    runners do not have the patience to wait a whole hour to know how fast they have been running.
+                    Instead, runners measure their speed in terms of minutes per mile or minutes per kilometer.
+                    This type of speed measurement is what runners call pace.
+                    """
                 ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Some examples" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine how fast your pace should be if you have a certain finish time for the next distance or race.
+                        For example, find out what pace you need to keep to run
+                        10 miles less than 40 minutes or a sub 2:00 half marathon.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine what pace needed to run to break the world record for the marathon.
+                        The current world record time for men over the distance is 2 hours 1 minute and 39 seconds.
+                        """
+                    ]
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Interesting facts" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The current world record time for men over the distance is 2 hours 1 minute and 39 seconds,
+                        set in the Berlin Marathon by Eliud Kipchoge of Kenya on 16 September 2018,
+                        an improvement of 1 minute 18 seconds over the previous record also set in the Berlin Marathon
+                        by Dennis Kipruto Kimetto, also of Kenya on 28 September 2014.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The world record for women was set by Paula Radcliffe of Great Britain
+                        in the London Marathon on 13 April 2003, in 2 hours 15 minutes and 25 seconds.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Fauja Singh, finished the Toronto Waterfront Marathon,
+                        becoming the first centenarian ever to officially complete that distance. Singh,
+                        a British citizen, finished the race on 16 October 2011 with a time of 8:11:05.9,
+                        making him the oldest marathoner. Because Singh could not produce a birth certificate
+                        from rural 1911 Colonial India, the place of his birth, his age could not be verified
+                        and his record was not accepted by the official governing body World Masters Athletics.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The youngest under 4 hours is Mary Etta Boitano at age 7 years, 284 days;
+                        under 3 hours Julie Mullin at 10 years 180 days;
+                        and under 2:50 Carrie Garritson at 11 years 116 days.
+                        """
+                    ]
+                ]
+            ]
     in
     PageLayout.view
         { form = form

@@ -1,34 +1,45 @@
 .page-layout {
-  flex: 1 0 auto;
+  position: relative;
   display: flex;
   flex-wrap: wrap;
-  padding: 12px 24px;
+  height: 100%;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 50%;
+    bottom: 0%;
+    right: -50%;
+    background-repeat: no-repeat;
+    background-image: url('/images/icons/ranking.svg');
+    background-position: center bottom;
+    background-size: contain;
+    opacity: .1;
+  }
 
   @include tablet {
     justify-content: center;
   }
 
-  @include mobile {
-    padding: 8px;
-  }
-
   &__side {
-    padding: 12px;
+    padding: 12px 48px;
 
     &-left {
       width: 100%;
-      max-width: 468px;
-      margin-right: 12px;
+      max-width: 500px;
+      padding: 12px 48px;
 
-      @include tablet {
-        margin-right: 0;
+      @include mobile {
+        padding: 24px;
       }
     }
 
     &-right {
       flex: 1;
-      margin-left: 12px;
-
+      
       @include tablet {
         display: none;
       }

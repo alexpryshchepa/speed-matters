@@ -117,10 +117,6 @@ init =
 
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        clearResult =
-            ResultElement.setValue "..." model.result
-    in
     case msg of
         TimeInputMsg (InputElement.Self subMsg) ->
             let
@@ -142,7 +138,7 @@ update msg model =
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
-                            , result = clearResult
+                            , result = ResultElement.clearValue model.result
                           }
                         , Cmd.none
                         )
@@ -153,7 +149,7 @@ update msg model =
                         )
 
                 InputElement.ConvertationFailed ->
-                    ( { model | result = ResultElement.setValue "" model.result }
+                    ( { model | result = ResultElement.clearValue model.result }
                     , Cmd.none
                     )
 
@@ -186,7 +182,7 @@ update msg model =
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
-                            , result = clearResult
+                            , result = ResultElement.clearValue model.result
                           }
                         , Cmd.none
                         )
@@ -197,7 +193,7 @@ update msg model =
                         )
 
                 InputElement.ConvertationFailed ->
-                    ( { model | result = ResultElement.setValue "" model.result }
+                    ( { model | result = ResultElement.clearValue model.result }
                     , Cmd.none
                     )
 
@@ -234,7 +230,7 @@ update msg model =
             let
                 error message =
                     ( { model
-                        | result = clearResult
+                        | result = ResultElement.clearValue model.result
                         , isCalculated = False
                       }
                     , CmdUtil.fire <| (Parent << ShowSnackbar) message
@@ -281,7 +277,7 @@ update msg model =
                                 success distance
 
                             else
-                                error "The distance is out of range, please insert smaller values of time or pace"
+                                error <| ValidatorService.outOfRange "distance"
 
                         CalculationError message ->
                             error message
@@ -290,7 +286,7 @@ update msg model =
             ( { model
                 | time = InputElement.setValue "" model.time
                 , pace = InputElement.setValue "" model.pace
-                , result = ResultElement.setValue "..." model.result
+                , result = ResultElement.clearValue model.result
                 , isCalculated = False
               }
             , Port.saveToLocalStorage
@@ -357,37 +353,31 @@ validate : InputElement.Model -> InputElement.Model -> Validation
 validate time pace =
     case ( time.isValid, pace.isValid ) of
         ( False, False ) ->
-            ValidationError "Both fields are not valid, please take a look at the hints"
-
-        ( True, False ) ->
-            ValidationError "Not valid value for pace"
+            ValidationError ValidatorService.fieldsNotValid
 
         ( False, True ) ->
-            ValidationError "Not valid value for time"
+            ValidationError <| ValidatorService.fieldNotValid "time"
+
+        ( True, False ) ->
+            ValidationError <| ValidatorService.fieldNotValid "pace"
 
         ( True, True ) ->
-            -- Fields are valid but can be empty, so check emptyness next
             case ( not <| String.isEmpty time.value, not <| String.isEmpty pace.value ) of
                 ( False, False ) ->
-                    ValidationError "Both fields are empty. Please fill the fields to calculate distance"
-
-                ( True, False ) ->
-                    ValidationError "Please add pace value"
+                    ValidationError <| ValidatorService.fieldsEmpty "distance"
 
                 ( False, True ) ->
-                    ValidationError "Please add time value"
+                    ValidationError <| ValidatorService.fieldEmpty "time"
+
+                ( True, False ) ->
+                    ValidationError <| ValidatorService.fieldEmpty "pace"
 
                 ( True, True ) ->
-                    -- Fields are valid and have value, so we can try to calculate pace
                     ValidationSuccess
 
 
 calculate : InputElement.Model -> InputElement.Model -> ResultElement.Model -> Calculation
 calculate time pace result =
-    let
-        error =
-            CalculationError "Something went wrong. Please contact us"
-    in
     case ( ConverterService.timeToSec time.value, ConverterService.paceToSec pace.value ) of
         ( Just t, Just p ) ->
             case ( result.unit, pace.unit ) of
@@ -416,10 +406,10 @@ calculate time pace result =
                     CalculationSuccess <| toFloat (CalculatorService.mToYd (round (CalculatorService.distance t p * 100)))
 
                 _ ->
-                    error
+                    CalculationError ValidatorService.unhandledException
 
         _ ->
-            error
+            CalculationError ValidatorService.unhandledException
 
 
 subscriptions : Model -> Sub Msg
@@ -431,85 +421,82 @@ view : Model -> Html Msg
 view model =
     let
         form =
-            div []
-                [ Html.map (Self << TimeInputMsg) <|
-                    InputElement.view
-                        { name = "Swimming time"
-                        , units =
-                            ( "swimming-distance-time"
-                            , [ { unit = UnitService.Time
-                                , name = ""
-                                , hint = "You should follow this pattern - HH:MM:SS"
-                                , shortcut = ""
-                                , regex = ValidatorService.timeRegex
-                                , error = "Wrong value, please make sure you added leading zeros and followe HH:MM:SS (hours:minutes:seconds) pattern"
-                                }
-                              ]
-                            )
-                        , links =
-                            []
-                        }
-                        model.time
-                , Html.map (Self << PaceInputMsg) <|
-                    InputElement.view
-                        { name = "Swimming pace"
-                        , units =
-                            ( "swimming-distance-pace"
-                            , [ { unit = UnitService.Pace UnitService.Per100Meters
-                                , name = "Per meters"
-                                , hint = "You should follow this pattern - MM:SS"
-                                , shortcut = "min/100m"
-                                , regex = ValidatorService.paceRegex
-                                , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
-                                }
-                              , { unit = UnitService.Pace UnitService.Per100Yards
-                                , name = "Per yards"
-                                , hint = "You should follow this pattern - MM:SS"
-                                , shortcut = "min/100yd"
-                                , regex = ValidatorService.paceRegex
-                                , error = "Wrong value, please make sure you added leading zeros and followe MM:SS (minutes:seconds) pattern"
-                                }
-                              ]
-                            )
-                        , links =
-                            []
-                        }
-                        model.pace
-                ]
+            [ Html.map (Self << TimeInputMsg) <|
+                InputElement.view
+                    { name = "Swimming time"
+                    , units =
+                        ( "swimming-distance-time"
+                        , [ { unit = UnitService.Time
+                            , name = ""
+                            , hint = ValidatorService.timeHint
+                            , shortcut = ""
+                            , regex = ValidatorService.timeRegex
+                            , error = ValidatorService.timeError
+                            }
+                          ]
+                        )
+                    , links =
+                        []
+                    }
+                    model.time
+            , Html.map (Self << PaceInputMsg) <|
+                InputElement.view
+                    { name = "Swimming pace"
+                    , units =
+                        ( "swimming-distance-pace"
+                        , [ { unit = UnitService.Pace UnitService.Per100Meters
+                            , name = "Per meters"
+                            , hint = ValidatorService.paceHint
+                            , shortcut = "min/100m"
+                            , regex = ValidatorService.paceRegex
+                            , error = ValidatorService.paceError
+                            }
+                          , { unit = UnitService.Pace UnitService.Per100Yards
+                            , name = "Per yards"
+                            , hint = ValidatorService.paceHint
+                            , shortcut = "min/100yd"
+                            , regex = ValidatorService.paceRegex
+                            , error = ValidatorService.paceError
+                            }
+                          ]
+                        )
+                    , links =
+                        []
+                    }
+                    model.pace
+            ]
 
         result =
-            div []
-                [ Html.map (Self << ResultMsg) <|
-                    ResultElement.view
-                        { title = "Your distance is"
-                        , units =
-                            ( "swimming-distance-result"
-                            , [ { name = "Meters"
-                                , unit = UnitService.Distance UnitService.Meter
-                                , shortcut = "m"
-                                }
-                              , { name = "Yards"
-                                , unit = UnitService.Distance UnitService.Yard
-                                , shortcut = "yd"
-                                }
-                              , { name = "Kilometers"
-                                , unit = UnitService.Distance UnitService.Kilometer
-                                , shortcut = "km"
-                                }
-                              , { name = "Miles"
-                                , unit = UnitService.Distance UnitService.Mile
-                                , shortcut = "mi"
-                                }
-                              ]
-                            )
-                        }
-                        model.result
-                ]
+            [ Html.map (Self << ResultMsg) <|
+                ResultElement.view
+                    { title = "Distance is"
+                    , units =
+                        ( "swimming-distance-result"
+                        , [ { name = "Meters"
+                            , unit = UnitService.Distance UnitService.Meter
+                            , shortcut = "m"
+                            }
+                          , { name = "Yards"
+                            , unit = UnitService.Distance UnitService.Yard
+                            , shortcut = "yd"
+                            }
+                          , { name = "Kilometers"
+                            , unit = UnitService.Distance UnitService.Kilometer
+                            , shortcut = "km"
+                            }
+                          , { name = "Miles"
+                            , unit = UnitService.Distance UnitService.Mile
+                            , shortcut = "mi"
+                            }
+                          ]
+                        )
+                    }
+                    model.result
+            ]
 
         description =
-            div []
-                [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Swimming Distance Calculator?" ]
-                ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "CONTENT" ]
+            ]
     in
     PageLayout.view
         { form = form

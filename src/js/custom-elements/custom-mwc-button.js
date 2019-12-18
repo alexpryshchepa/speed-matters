@@ -22,6 +22,10 @@ class CustomButton extends Button {
       .mdc-button .mdc-button__ripple::after {
         background-color: var(--mdc-theme-primary) !important;
       }
+
+      .mdc-button__label {
+        white-space: nowrap !important;
+      }
     `;
 
     this.shadowRoot.appendChild(style_);

@@ -16,7 +16,8 @@
             "elm-community/basics-extra": "4.0.0",
             "elm-community/json-extra": "4.2.0",
             "elm-community/list-extra": "8.2.2",
-            "elm-community/maybe-extra": "5.1.0"
+            "elm-community/maybe-extra": "5.1.0",
+            "elm-community/string-extra": "4.0.1"
         },
         "indirect": {
             "elm/bytes": "1.0.8",

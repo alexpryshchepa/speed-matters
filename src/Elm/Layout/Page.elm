@@ -6,14 +6,14 @@ import Html.Events exposing (..)
 
 
 type alias Model msg =
-    { form : Html msg
-    , result : Html msg
+    { form : List (Html msg)
+    , result : List (Html msg)
     , calculate :
         { msg : msg
         , isCalculated : Bool
         }
     , reset : msg
-    , description : Html msg
+    , description : List (Html msg)
     }
 
 
@@ -21,7 +21,7 @@ view : Model msg -> Html msg
 view { form, result, calculate, reset, description } =
     div [ class "page-layout" ]
         [ div [ class "page-layout__side page-layout__side-left" ]
-            [ form
+            [ div [ class "page-layout__form" ] form
             , div
                 [ class "page-layout__buttons" ]
                 [ node "custom-mwc-button"
@@ -45,8 +45,8 @@ view { form, result, calculate, reset, description } =
                     ]
                     []
                 ]
-            , result
+            , div [ class "page-layout__result" ] result
             ]
         , div [ class "page-layout__side page-layout__side-right" ]
-            [ description ]
+            [ div [ class "page-layout__description" ] description ]
         ]

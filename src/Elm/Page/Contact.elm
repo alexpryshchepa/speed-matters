@@ -12,29 +12,73 @@ import Html.Events exposing (..)
 
 
 type alias Model =
-    {}
+    { email : String
+    }
 
 
 type Msg
-    = NoOp
+    = ShowEmail
 
 
 init : Model
 init =
-    {}
+    { email = ""
+    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    ( model
-    , Cmd.none
-    )
+    case msg of
+        ShowEmail ->
+            ( { model | email = "spdmttrs@gmail.com" }
+            , Cmd.none
+            )
 
 
 view : Model -> Html Msg
 view model =
     div [ class "contact-page" ]
-        [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Contact us" ]
-        , p [ class "mdc-typography mdc-typography--body1" ]
-            [ text "If you have any wishes for improving the functionality or usability, you can easily contact us at this email address. Also, if you notice a bug please let us know with the attached screenshot or a detailed description of the problem. I am grateful to accept the proposals for adding new calculators." ]
+        [ div [ class "contact-page__content" ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Contact us" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    If you have any advice for improving the functionality or usability,
+                    please drop us a line by
+                    """
+                , span
+                    [ class "contact-page__link"
+                    , onClick ShowEmail
+                    ]
+                    [ text "email" ]
+                , text "."
+                , text
+                    """
+                    We will be very glad to hear your suggestions for adding new calculators.
+                    Also, if you notice a bug please let us know with the attached screenshots
+                    or a detailed description of the problem.
+                    Thanks! May the speed be with you! 🏃
+                    """
+                ]
+            , div
+                [ class "contact-page__contact"
+                , classList [ ( "is-visible", not <| String.isEmpty model.email ) ]
+                ]
+                [ node "custom-mwc-button"
+                    [ class "contact-page__button"
+                    , attribute "outlined" ""
+                    , attribute "dense" ""
+                    , attribute "label" "Show email"
+                    , onClick ShowEmail
+                    ]
+                    []
+                , a
+                    [ class "contact-page__email mdc-typography mdc-typography--body1"
+                    , href ("mailto:" ++ model.email)
+                    ]
+                    [ text model.email ]
+                ]
+            ]
+        , div [ class "contact-page__image" ]
+            []
         ]

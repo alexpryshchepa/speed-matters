@@ -117,10 +117,6 @@ init =
 
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        clearResult =
-            ResultElement.setValue "..." model.result
-    in
     case msg of
         DistanceInputMsg (InputElement.Self subMsg) ->
             let
@@ -142,7 +138,7 @@ update msg model =
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
-                            , result = clearResult
+                            , result = ResultElement.clearValue model.result
                           }
                         , Cmd.none
                         )
@@ -153,7 +149,7 @@ update msg model =
                         )
 
                 InputElement.ConvertationFailed ->
-                    ( { model | result = ResultElement.setValue "" model.result }
+                    ( { model | result = ResultElement.clearValue model.result }
                     , Cmd.none
                     )
 
@@ -186,7 +182,7 @@ update msg model =
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
-                            , result = clearResult
+                            , result = ResultElement.clearValue model.result
                           }
                         , Cmd.none
                         )
@@ -197,7 +193,7 @@ update msg model =
                         )
 
                 InputElement.ConvertationFailed ->
-                    ( { model | result = ResultElement.setValue "" model.result }
+                    ( { model | result = ResultElement.clearValue model.result }
                     , Cmd.none
                     )
 
@@ -234,7 +230,7 @@ update msg model =
             let
                 error message =
                     ( { model
-                        | result = clearResult
+                        | result = ResultElement.clearValue model.result
                         , isCalculated = False
                       }
                     , CmdUtil.fire <| (Parent << ShowSnackbar) message
@@ -281,7 +277,7 @@ update msg model =
                                 success sec
 
                             else
-                                error "The time is out of range, please insert smaller values of distance or speed"
+                                error <| ValidatorService.outOfRange "time"
 
                         CalculationError message ->
                             error message
@@ -290,7 +286,7 @@ update msg model =
             ( { model
                 | distance = InputElement.setValue "" model.distance
                 , speed = InputElement.setValue "" model.speed
-                , result = ResultElement.setValue "..." model.result
+                , result = ResultElement.clearValue model.result
                 , isCalculated = False
               }
             , Port.saveToLocalStorage
@@ -354,25 +350,25 @@ validate : InputElement.Model -> InputElement.Model -> Validation
 validate distance speed =
     case ( distance.isValid, speed.isValid ) of
         ( False, False ) ->
-            ValidationError "Both fields are not valid, please take a look at the hints"
-
-        ( True, False ) ->
-            ValidationError "Not valid value for speed"
+            ValidationError ValidatorService.fieldsNotValid
 
         ( False, True ) ->
-            ValidationError "Not valid value for distance"
+            ValidationError <| ValidatorService.fieldNotValid "distance"
+
+        ( True, False ) ->
+            ValidationError <| ValidatorService.fieldNotValid "speed"
 
         ( True, True ) ->
             -- Fields are valid but can be empty, so check emptyness next
             case ( not <| String.isEmpty distance.value, not <| String.isEmpty speed.value ) of
                 ( False, False ) ->
-                    ValidationError "Both fields are empty. Please fill the fields to calculate speed"
-
-                ( True, False ) ->
-                    ValidationError "Please add speed value"
+                    ValidationError <| ValidatorService.fieldsEmpty "time"
 
                 ( False, True ) ->
-                    ValidationError "Please add distance value"
+                    ValidationError <| ValidatorService.fieldEmpty "distance"
+
+                ( True, False ) ->
+                    ValidationError <| ValidatorService.fieldEmpty "speed"
 
                 ( True, True ) ->
                     -- Fields are valid and have value, so we can try to calculate pace
@@ -381,10 +377,6 @@ validate distance speed =
 
 calculate : InputElement.Model -> InputElement.Model -> Calculation
 calculate distance speed =
-    let
-        error =
-            CalculationError "Something went wrong. Please contact us"
-    in
     case ( String.toFloat distance.value, String.toFloat speed.value ) of
         ( Just d, Just s ) ->
             case ( distance.unit, speed.unit ) of
@@ -401,10 +393,10 @@ calculate distance speed =
                     CalculationSuccess <| round (3600 * CalculatorService.time2 d (CalculatorService.kmPerHToMiPerH s))
 
                 _ ->
-                    error
+                    CalculationError ValidatorService.unhandledException
 
         _ ->
-            error
+            CalculationError ValidatorService.unhandledException
 
 
 subscriptions : Model -> Sub Msg
@@ -416,88 +408,85 @@ view : Model -> Html Msg
 view model =
     let
         form =
-            div []
-                [ Html.map (Self << DistanceInputMsg) <|
-                    InputElement.view
-                        { name = "Cycling distance"
-                        , units =
-                            ( "cycling-time-distance"
-                            , [ { unit = UnitService.Distance UnitService.Kilometer
-                                , name = "Kilometers"
-                                , hint = "Must be a number, e.g 21.098"
-                                , shortcut = "km"
-                                , regex = ValidatorService.floatRegex
-                                , error = "Wrong value, please make sure you value is float or integer number e.g. 42.195"
-                                }
-                              , { unit = UnitService.Distance UnitService.Mile
-                                , name = "Miles"
-                                , hint = "Must be a number, e.g 26.1"
-                                , shortcut = "mi"
-                                , regex = ValidatorService.floatRegex
-                                , error = "Wrong value, please make sure you value is float or integer number e.g. 42.195"
-                                }
-                              ]
-                            )
-                        , links =
-                            [ { name = "Alpe d'Huez"
-                              , value = "13.2"
-                              , unit = UnitService.Distance UnitService.Kilometer
-                              }
-                            , { name = "Paris - Roubaix"
-                              , value = "150"
-                              , unit = UnitService.Distance UnitService.Mile
-                              }
-                            , { name = "Milan - San Remo"
-                              , value = "185"
-                              , unit = UnitService.Distance UnitService.Mile
-                              }
-                            ]
-                        }
-                        model.distance
-                , Html.map (Self << SpeedInputMsg) <|
-                    InputElement.view
-                        { name = "Cycling speed"
-                        , units =
-                            ( "cycling-time-speed"
-                            , [ { unit = UnitService.Speed UnitService.KilometersPerHour
-                                , name = "Kilometers"
-                                , hint = "Must be a number, e.g 33.5"
-                                , shortcut = "km/h"
-                                , regex = ValidatorService.floatRegex
-                                , error = "Wrong value, please make sure you value is float or integer number e.g. 18"
-                                }
-                              , { unit = UnitService.Speed UnitService.MilesPerHour
-                                , name = "Miles"
-                                , hint = "Must be a number, e.g 33.5"
-                                , shortcut = "mi/h"
-                                , regex = ValidatorService.floatRegex
-                                , error = "Wrong value, please make sure you value is float or integer number e.g. 18"
-                                }
-                              ]
-                            )
-                        , links =
-                            []
-                        }
-                        model.speed
-                ]
+            [ Html.map (Self << DistanceInputMsg) <|
+                InputElement.view
+                    { name = "Cycling distance"
+                    , units =
+                        ( "cycling-time-distance"
+                        , [ { unit = UnitService.Distance UnitService.Kilometer
+                            , name = "Kilometers"
+                            , hint = ValidatorService.floatHint
+                            , shortcut = "km"
+                            , regex = ValidatorService.floatRegex
+                            , error = ValidatorService.floatError
+                            }
+                          , { unit = UnitService.Distance UnitService.Mile
+                            , name = "Miles"
+                            , hint = ValidatorService.floatHint
+                            , shortcut = "mi"
+                            , regex = ValidatorService.floatRegex
+                            , error = ValidatorService.floatError
+                            }
+                          ]
+                        )
+                    , links =
+                        [ { name = "Alpe d'Huez"
+                          , value = "13.2"
+                          , unit = UnitService.Distance UnitService.Kilometer
+                          }
+                        , { name = "Paris - Roubaix"
+                          , value = "150"
+                          , unit = UnitService.Distance UnitService.Mile
+                          }
+                        , { name = "Milan - San Remo"
+                          , value = "185"
+                          , unit = UnitService.Distance UnitService.Mile
+                          }
+                        ]
+                    }
+                    model.distance
+            , Html.map (Self << SpeedInputMsg) <|
+                InputElement.view
+                    { name = "Cycling speed"
+                    , units =
+                        ( "cycling-time-speed"
+                        , [ { unit = UnitService.Speed UnitService.KilometersPerHour
+                            , name = "Kilometers"
+                            , hint = "Must be a number, e.g 33.5"
+                            , shortcut = "km/h"
+                            , regex = ValidatorService.floatRegex
+                            , error = "Wrong value, please make sure you value is float or integer number e.g. 18"
+                            }
+                          , { unit = UnitService.Speed UnitService.MilesPerHour
+                            , name = "Miles"
+                            , hint = "Must be a number, e.g 33.5"
+                            , shortcut = "mi/h"
+                            , regex = ValidatorService.floatRegex
+                            , error = "Wrong value, please make sure you value is float or integer number e.g. 18"
+                            }
+                          ]
+                        )
+                    , links =
+                        []
+                    }
+                    model.speed
+            ]
 
         result =
-            div []
-                [ Html.map (Self << ResultMsg) <|
-                    ResultElement.view
-                        { title = "Your time is"
-                        , units =
-                            ( ""
-                            , []
-                            )
-                        }
-                        model.result
-                ]
+            [ Html.map (Self << ResultMsg) <|
+                ResultElement.view
+                    { title = "Time is"
+                    , units =
+                        ( ""
+                        , []
+                        )
+                    }
+                    model.result
+            ]
 
         description =
-            div []
-                [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Cycling Time Calculator?" ]
-                ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "CONTENT" ]
+            ]
     in
     PageLayout.view
         { form = form

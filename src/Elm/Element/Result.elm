@@ -2,6 +2,7 @@ module Elm.Element.Result exposing
     ( ExternalMsg(..)
     , Model
     , Msg(..)
+    , clearValue
     , init
     , setValue
     , update
@@ -47,9 +48,14 @@ type alias UnitData =
     }
 
 
+initialValue : String
+initialValue =
+    "..."
+
+
 init : UnitService.Unit -> Model
 init unit =
-    { value = "..."
+    { value = initialValue
     , unit = unit
     }
 
@@ -70,6 +76,11 @@ update msg model =
 setValue : String -> Model -> Model
 setValue value model =
     { model | value = value }
+
+
+clearValue : Model -> Model
+clearValue model =
+    { model | value = initialValue }
 
 
 view : Settings -> Model -> Html Msg
