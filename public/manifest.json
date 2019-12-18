@@ -1,6 +1,6 @@
 {
   "short_name": "Speed Matters",
-  "name": "Speed Matters - sport calculators",
+  "name": "Speed Matters - running, cycling, swimming calculators",
   "icons": [
     {
       "src": "./images/homescreen/48.png",
@@ -38,7 +38,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"

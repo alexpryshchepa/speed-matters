@@ -495,7 +495,54 @@ view model =
             ]
 
         description =
-            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "CONTENT" ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Get swimming distance" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    To calculate the distance you need the pace you swim at and the duration
+                    of your session or competition. The most popular pool swimming distances are 50, 100, 200, 400, 800 and 1500 meters.
+                    Open water swimming distances can vary from 500 meters to such long-distances as crossing Gibraltar (10 miles),
+                    swimming across the English Channel (32 km).
+                    """
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use to" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine the distance that you can swim in one hour with
+                        a light pace to find out what distance to choose
+                        for your first open water swimming event.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Predict your distance on the next swimming workout.
+                        """
+                    ]
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Interesting facts" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The Norseman Xtreme Triathlon is a long distance competition in very difficult conditions.
+                        The swimming distance is 3800 meters in extremely cold water, approximately 10 degrees.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        On 21 August 2018, Linda Ashmore from the United Kingdom became
+                        the oldest person who swam across the English Channel.
+                        Her birth date is 21 October 1946, she made the swim aged 71 years.
+                        """
+                    ]
+                ]
             ]
     in
     PageLayout.view

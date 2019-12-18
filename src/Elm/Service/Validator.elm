@@ -103,7 +103,7 @@ fieldEmpty name =
 
 floatHint : String
 floatHint =
-    "Must be a number, float number is allowed (e.g. 21.5, 100)"
+    "Must be an integer or float (e.g. 21.5)"
 
 
 floatError : String

@@ -510,7 +510,51 @@ view model =
             ]
 
         description =
-            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Who Uses a Swimming Pace Calculator?" ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "What is the swimming pace?" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    The pace in swimming is usually called the time during which the swimmer
+                    swims 100 meters or 100 yards. The average swimming pace of a non-professional
+                    is usually 2 minutes 30 seconds per 100 meters,
+                    and professionals swim faster than 1 minute 30 seconds.
+                    """
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use to" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine what speed you need to swim 1 km in less than 25 minutes.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine your pace for the next training session or competition.
+                        """
+                    ]
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Interesting facts" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The current world records in the men's 100 metres freestyle swimming is 46.91 seconds
+                        for the long distance (swimming pool 50 meters) and 44.94 seconds for the short distance (swimming pool 25 meters).
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The longest swimming distance at the Olympic Games is 10 kilometers.
+                        This is an open water competition that the fastest swimmers overcome in 1 hour 50 minutes.
+                        """
+                    ]
+                ]
             ]
     in
     PageLayout.view

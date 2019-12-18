@@ -435,11 +435,11 @@ view model =
                           , unit = UnitService.Distance UnitService.Kilometer
                           }
                         , { name = "Paris - Roubaix"
-                          , value = "150"
-                          , unit = UnitService.Distance UnitService.Mile
+                          , value = "257"
+                          , unit = UnitService.Distance UnitService.Kilometer
                           }
                         , { name = "Milan - San Remo"
-                          , value = "185"
+                          , value = "185.2"
                           , unit = UnitService.Distance UnitService.Mile
                           }
                         ]
@@ -485,7 +485,52 @@ view model =
             ]
 
         description =
-            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "CONTENT" ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Get your time" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    Knowing the time will help you understand
+                    whether you can achieve the next goal, whether
+                    it will be a group race or a cycling part of Ironman.
+                    """
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use to" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine the time of your next training session.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine the time you need to get to the target place.
+                        """
+                    ]
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Interesting facts" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The Paris–Roubaix is a famous one-day professional men's bicycle road race in northern France.
+                        The road of this race is very tough, covered with paving stones and earthen plots.
+                        Punctures and falls occur very often. But still, the fastest time of this
+                        race is 5 hours 41 minutes 7 seconds for a distance of 257 km (159.7 mi).
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The average time to complete Ironman 140.6 is 12 hours and 35 minutes.
+                        180 km (112 mi) bike course takes approximately 6 hours 25 minutes.
+                        """
+                    ]
+                ]
             ]
     in
     PageLayout.view

@@ -434,11 +434,11 @@ view model =
                           , unit = UnitService.Distance UnitService.Kilometer
                           }
                         , { name = "Paris - Roubaix"
-                          , value = "150"
-                          , unit = UnitService.Distance UnitService.Mile
+                          , value = "257"
+                          , unit = UnitService.Distance UnitService.Kilometer
                           }
                         , { name = "Milan - San Remo"
-                          , value = "185"
+                          , value = "185.2"
                           , unit = UnitService.Distance UnitService.Mile
                           }
                         ]
@@ -484,7 +484,59 @@ view model =
             ]
 
         description =
-            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "CONTENT" ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Get your speed" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    Of course, you can calculate not only the speed of cycling, but the bike is our focus.
+                    The average speed of cycling can reach 40 km per hour on a flat surface.
+                    On cycling competitions, the speed can be even greater since the aerodynamic
+                    effect of the peloton works there. Trying to reach your maximum speed do not forget about the traffic rules 😉
+                    """
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use to" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine how fast you are on the last ride.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Find out the speed you should ride to get to work on time.
+                        """
+                    ]
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Interesting facts" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The fastest human to ride a bicycle over open ground is named Denise Mueller-Korenek,
+                        who rode a custom bike at an average of 184 miles per hour –
+                        shattering a world record that had stood since 1995.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The fastest Tour de France was ridden by Lance Armstrong 3592.5 km
+                        in 86 hours 15 minutes 02 seconds – at an average speed of 41.7 km/h (25.9 mi/h).
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        The bike course on Ironman competition is 180 km long.
+                        The fastest athletes can ride it less than 4 hours with an average speed of 45 km/h.
+                        """
+                    ]
+                ]
             ]
     in
     PageLayout.view

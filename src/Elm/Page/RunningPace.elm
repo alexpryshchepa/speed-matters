@@ -507,7 +507,7 @@ view model =
 
         description =
             [ h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "What is running pace?" ]
+                [ text "What is the running pace?" ]
             , p [ class "mdc-typography mdc-typography--body1" ]
                 [ text
                     """
@@ -519,21 +519,22 @@ view model =
                     """
                 ]
             , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Some examples" ]
+                [ text "Try to use to" ]
             , ul []
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
                         Determine how fast your pace should be if you have a certain finish time for the next distance or race.
                         For example, find out what pace you need to keep to run
-                        10 miles less than 40 minutes or a sub 2:00 half marathon.
+                        10 km less than 42 minutes or a sub 2:00 half marathon.
                         """
                     ]
                 , li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
                         Determine what pace needed to run to break the world record for the marathon.
-                        The current world record time for men over the distance is 2 hours 1 minute and 39 seconds.
+                        The current world record time for men is 2 hours 1 minute and 39 seconds.
+                        Hope you will see your average pace of the last workout 😁
                         """
                     ]
                 ]
@@ -543,7 +544,7 @@ view model =
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        The current world record time for men over the distance is 2 hours 1 minute and 39 seconds,
+                        The current world record time for marathon is 2 hours 1 minute and 39 seconds,
                         set in the Berlin Marathon by Eliud Kipchoge of Kenya on 16 September 2018,
                         an improvement of 1 minute 18 seconds over the previous record also set in the Berlin Marathon
                         by Dennis Kipruto Kimetto, also of Kenya on 28 September 2014.
@@ -552,27 +553,20 @@ view model =
                 , li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        The world record for women was set by Paula Radcliffe of Great Britain
-                        in the London Marathon on 13 April 2003, in 2 hours 15 minutes and 25 seconds.
+                        On 13 April 2003, Paula Radcliffe from Great Britain set the new women's world record for a marathon.
+                        She ran the distance in 2 hours 15 minutes and 25 seconds. This record was held for 13 years
+                        until in 2019, Brigid Kosgei of Kenya running a marathon in 2 hours 14 minutes and 4 seconds.
                         """
                     ]
                 , li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        Fauja Singh, finished the Toronto Waterfront Marathon,
-                        becoming the first centenarian ever to officially complete that distance. Singh,
-                        a British citizen, finished the race on 16 October 2011 with a time of 8:11:05.9,
+                        In 2011, the 100 years old Fauja Singh, finished the Toronto Waterfront Marathon,
+                        becoming the first centenarian ever to officially complete that distance. Singh finished the race
+                        with a time of 8 hours 11 minutes and 5 seconds,
                         making him the oldest marathoner. Because Singh could not produce a birth certificate
                         from rural 1911 Colonial India, the place of his birth, his age could not be verified
                         and his record was not accepted by the official governing body World Masters Athletics.
-                        """
-                    ]
-                , li [ class "mdc-typography mdc-typography--body1" ]
-                    [ text
-                        """
-                        The youngest under 4 hours is Mary Etta Boitano at age 7 years, 284 days;
-                        under 3 hours Julie Mullin at 10 years 180 days;
-                        and under 2:50 Carrie Garritson at 11 years 116 days.
                         """
                     ]
                 ]

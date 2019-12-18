@@ -511,7 +511,52 @@ view model =
             ]
 
         description =
-            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "CONTENT" ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Get swimming time" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    Tracking time in swimming is very important.
+                    Most workout plans include interval workouts.
+                    Calculate time using our calculator.
+                    """
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use to" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine the time of your next swimming session. Plan your intervals ahead.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Predict your time for the Ironman swimming course.
+                        """
+                    ]
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Interesting facts" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Martin Strel is legendary long-distance swimmer. He is the only man in the world
+                        who has swum the 5 greatest rivers on the planet: the Amazon, Yangtze, Paraná, Mississippi, Danube.
+                        Just imagine the entire time of swimming, if to swam Mississippi River took him 68 days (3.885 km).
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Over two thousands of swimmers from up to 50 countries every year take part in Cross Continental Swim
+                        in Bosphorus waterway. Bosphorus forms part of the continental boundary between Europe and Asia.
+                        The course record was set in 2006 with a time of 39 minutes 7 second.
+                        """
+                    ]
+                ]
             ]
     in
     PageLayout.view

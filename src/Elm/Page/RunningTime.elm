@@ -511,16 +511,27 @@ view model =
                 [ text
                     """
                     To calculate time you need the pace you ran at and the distance of your training run or race.
+                    The world`s average time to complete a marathon is around 5 hours.
+                    Most men finish a marathon in under 4 and a half hours. Most women finish in just under 5 hours.
+                    Elite runners can run the distance in about 2 hours.
                     """
                 ]
             , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Some examples" ]
-            , p [ class "mdc-typography mdc-typography--body1" ]
-                [ text
-                    """
-                    Find out if you can run 10 miles in less than an hour
-                    if you will run at the pace of your last hard training session.
-                    """
+                [ text "Try to use to" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Find out if you can run 10 miles in less than an hour
+                        if you will run at the pace of your last hard training session.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine the duration of your next training session.
+                        """
+                    ]
                 ]
             , h2 [ class "mdc-typography mdc-typography--headline4" ]
                 [ text "Interesting facts" ]
@@ -528,23 +539,17 @@ view model =
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        Dean Karnazes has completed a number of endurance events,
-                        mostly running events, but also a swimming event.
-                        Most notable achievements include: Ran 350 miles (560 km) in 80 hours
-                        and 44 minutes without sleep in 2005.
+                        Dean Karnazes is an extraordinary athlete with high endurance.
+                        One of his greatest achievements is running for 80 hours and 44 minutes
+                        without sleep in 2005. During the race, he run  560 km (350 mi).
                         """
                     ]
                 , li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        Billed as "the world's toughest foot race", the Badwater 135 race
-                        is most well-known for its 135 grueling miles that includes
-                        a jaunt through Death Valley in July! The race starts in Death Valley
-                        and ends on Mount Whitney, covering "three mountain ranges for a total of 14,600
-                        feet of cumulative vertical ascent and 6,100 feet of cumulative descent."
-                        To even qualify for the Badwater 135, you have to complete the Badwater
-                        Salton Sea race, which covers 81 non-stop miles from below sea level
-                        at the Salton Sea, through the desert to the top of Palomar Mountain.
+                        Japanese Nao Kazami is one of the outstanding personalities in running.
+                        On June 24, 2018, he broke a 100 km running record with the
+                        result of 6 hours 9 minutes 14 seconds.
                         """
                     ]
                 ]

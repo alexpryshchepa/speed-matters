@@ -475,7 +475,55 @@ view model =
             ]
 
         description =
-            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "CONTENT" ]
+            [ h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Get the distance" ]
+            , p [ class "mdc-typography mdc-typography--body1" ]
+                [ text
+                    """
+                    The distance is calculated by multiplying time by speed.
+                    Of course, with this calculator you can calculate not only the cycling distance,
+                    but also the running, swimming and so on (knowing your speed).
+                    But here we focus on the bike 🚴
+                    """
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use to" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Determine how far you will be at your target average speed.
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        Find out the distance of your next training ride in order to choose the route in advance.
+                        """
+                    ]
+                ]
+            , h2 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Interesting facts" ]
+            , ul []
+                [ li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        One of the most prestigious records in cycling is an hour record.
+                        The cyclist must ride as far as possible in one hour.
+                        Cyclists attempt this record alone on the track without other
+                        competitors present. On 16 April 2019, Victor Campenaerts set the current record
+                        at 55.089 km (34.23 mi).
+                        """
+                    ]
+                , li [ class "mdc-typography mdc-typography--body1" ]
+                    [ text
+                        """
+                        One year cycling distance record holds Amanda Coker.
+                        In 2017, she rode 86.573 mi (139.326 km) and overpass
+                        the previous record by over 10.000 mi  (16.093 km).
+                        """
+                    ]
+                ]
             ]
     in
     PageLayout.view

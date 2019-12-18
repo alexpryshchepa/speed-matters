@@ -500,18 +500,23 @@ view model =
             , p [ class "mdc-typography mdc-typography--body1" ]
                 [ text
                     """
-                    To calculate the distance you need the pace you ran at and the duration of your training run or race.
+                    To calculate the distance you need the pace you ran at and the duration
+                    of your training run or race. The four most common distances for road running
+                    events are 5 km, 10 km, half marathon (21.1 km) and marathon (42.2 km).
+                    There are also events for athletes with a high endurance level called ultramarathons.
+                    The distances are 50 km (31 mi), 100 km (62.1 mi), 50 mi (80.5 km), and 100 mi,
+                    although many ultramarathons have other distances.
                     """
                 ]
             , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Some examples" ]
+                [ text "Try to use to" ]
             , ul []
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
                         Determine how far you can run at a certain pace.
                         For example, find out will you reach marathon distance
-                        if your pace will be 5:00 per minute throughout 4 hours.
+                        if your pace will be 5:00 min per km throughout 4 hours.
                         """
                     ]
                 , li [ class "mdc-typography mdc-typography--body1" ]
@@ -528,26 +533,27 @@ view model =
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        The Self-Transcendence 3100 Mile Race is one of the most extraordinary running events ever.
-                        With its 4,989 km it’s the world’s longest running route –
-                        and it leads around just one block in New York.
+                        The Self-Transcendence 3100 Mile Race is one of the impressive running race events ever.
+                        Participants should run 4.989 km around just one district in New York.
                         """
                     ]
                 , li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        A 24-hour run is a form of ultramarathon, in which a competitor runs as far as they can in 24 hours.
-                        Top runners will often run 200 kilometres (124 mi) or more,
-                        depending on conditions, and the best can go beyond 270 kilometres (168 mi).
+                        One form of an ultramarathon is in which a competitor runs as far as they can in 24 hours.
+                        The most enduring athletes will often run 200 km (124 mi) or more,
+                        depending on conditions, and the best can go beyond 270 km (168 mi).
                         """
                     ]
                 , li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
                         """
-                        The fastest 100 km ultra distance by a male athlete as sanctioned by the IAU
-                        (International Association of Ultrarunners) is 6 hours 9 minutes 14 seconds,
-                        achieved by Nao Kazami (Japan) at the Lake Saroma
-                        100 km Ultramarathon in Kitami City, Japan, on 24 June 2018.
+                        The world's toughest running race, the Badwater 135 is most known for its 135
+                        miles that include a jaunt through Death Valley in July under the scorching sun!
+                        The race starts in Death Valley and ends on Mount Whitney, covering three mountain
+                        ranges for a total of 14,600 feet of ascent and 6,100 feet of descent. But before,
+                        you must pass the qualification for this race that includes at least three running races
+                        of at least 100 miles in length and at least one of them should be completed in the last 13 months.
                         """
                     ]
                 ]
