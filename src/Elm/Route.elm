@@ -215,6 +215,7 @@ parser : UrlParser.Parser (Route -> a) a
 parser =
     UrlParser.oneOf
         [ UrlParser.map Home UrlParser.top
+        , UrlParser.map Home (UrlParser.s "index.html")
         , UrlParser.map RunningPace (UrlParser.s "running" </> UrlParser.s "pace")
         , UrlParser.map RunningTime (UrlParser.s "running" </> UrlParser.s "time")
         , UrlParser.map RunningDistance (UrlParser.s "running" </> UrlParser.s "distance")
