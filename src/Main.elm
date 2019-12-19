@@ -9,6 +9,7 @@ module Main exposing
 
 import Browser
 import Browser.Navigation as Nav
+import Elm.Port as Port
 import Elm.Route as Route
 import Elm.Util.Dom as DomUtil
 import Html exposing (..)
@@ -67,6 +68,9 @@ update msg model =
             let
                 ( routeModel, routeCmd ) =
                     Route.init url
+
+                log =
+                    Debug.log "url" url
             in
             ( { model
                 | url = url
@@ -75,6 +79,7 @@ update msg model =
             , Cmd.batch
                 [ Cmd.map RouteMsg routeCmd
                 , DomUtil.scrollTop "content" NoOp
+                , Port.pageChanged url.path
                 ]
             )
 

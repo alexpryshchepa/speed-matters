@@ -25,13 +25,20 @@ const app = Elm.Main.init({
   node: document.getElementById('root'),
 });
 
-
 app.ports.saveToLocalStorage.subscribe(([ key, value ]) => store.set(key, JSON.stringify(value)));
 app.ports.getFromLocalStorage.subscribe(key => {
   const data = store.get(key);
 
   if (data) {
     app.ports.responseFromLocalStorage.send(JSON.parse(data));
+  }
+});
+
+// Google analytics
+app.ports.pageChanged.subscribe(path => {
+  if (window.ga) {
+    window.ga('set', 'page', path);
+    window.ga('send', 'pageview');
   }
 });
 
