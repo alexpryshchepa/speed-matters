@@ -68,9 +68,6 @@ update msg model =
             let
                 ( routeModel, routeCmd ) =
                     Route.init url
-
-                log =
-                    Debug.log "url" url
             in
             ( { model
                 | url = url
