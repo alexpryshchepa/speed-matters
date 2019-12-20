@@ -506,8 +506,8 @@ view model =
                     swimming across the English Channel (32 km).
                     """
                 ]
-            , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Try to use to" ]
+            , h1 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use swimming distance calculator to" ]
             , ul []
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text

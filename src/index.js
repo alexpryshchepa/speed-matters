@@ -34,11 +34,27 @@ app.ports.getFromLocalStorage.subscribe(key => {
   }
 });
 
-// Google analytics
-app.ports.pageChanged.subscribe(path => {
+app.ports.pageInitialized.subscribe(data => {
+  const pagePath = data[0];
+  const pageDescription = data[1];
+
   if (window.ga) {
-    window.ga('set', 'page', path);
+    window.ga('set', 'page', pagePath);
     window.ga('send', 'pageview');
+  }
+
+  if (pageDescription.length) {
+    const descriptionMeta = document.head.querySelector('[name=description][content]');
+
+    if (descriptionMeta) {
+      descriptionMeta.content = pageDescription;
+    } else {
+      const meta = document.createElement('meta');
+      meta.name = 'description';
+      meta.content =  pageDescription;
+
+      document.head.appendChild(meta);
+    }
   }
 });
 

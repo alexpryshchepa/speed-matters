@@ -9,9 +9,8 @@ module Main exposing
 
 import Browser
 import Browser.Navigation as Nav
-import Elm.Port as Port
 import Elm.Route as Route
-import Elm.Util.Dom as DomUtil
+import Elm.Util.Cmd as CmdUtil
 import Html exposing (..)
 import Url
 
@@ -28,6 +27,7 @@ type Msg
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | RouteMsg Route.Msg
+    | ChangePage Url.Url
 
 
 init : () -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -65,19 +65,17 @@ update msg model =
                     )
 
         UrlChanged url ->
+            ( { model | url = url }
+            , CmdUtil.fire <| ChangePage url
+            )
+
+        ChangePage url ->
             let
                 ( routeModel, routeCmd ) =
                     Route.init url
             in
-            ( { model
-                | url = url
-                , route = routeModel
-              }
-            , Cmd.batch
-                [ Cmd.map RouteMsg routeCmd
-                , DomUtil.scrollTop "content" NoOp
-                , Port.pageChanged url.path
-                ]
+            ( { model | route = routeModel }
+            , Cmd.map RouteMsg routeCmd
             )
 
         RouteMsg (Route.Self subMsg) ->

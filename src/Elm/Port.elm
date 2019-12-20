@@ -1,6 +1,6 @@
 port module Elm.Port exposing
     ( getFromLocalStorage
-    , pageChanged
+    , pageInitialized
     , responseFromLocalStorage
     , saveToLocalStorage
     )
@@ -17,4 +17,4 @@ port getFromLocalStorage : String -> Cmd msg
 port responseFromLocalStorage : (Encode.Value -> msg) -> Sub msg
 
 
-port pageChanged : String -> Cmd msg
+port pageInitialized : ( String, String ) -> Cmd msg

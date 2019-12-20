@@ -1,6 +1,5 @@
 module Elm.Page.NotFound exposing
-    ( ExternalMsg(..)
-    , Model
+    ( Model
     , Msg(..)
     , init
     , update
@@ -16,12 +15,8 @@ type alias Model =
     {}
 
 
-type ExternalMsg
-    = GoHome
-
-
 type Msg
-    = Parent ExternalMsg
+    = NoOp
 
 
 init : Model
@@ -42,10 +37,14 @@ view model =
         [ i [ class "not-found-page__icon material-icons" ]
             [ text "image_search" ]
         , h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Page not found" ]
-        , node "custom-mwc-button"
-            [ attribute "label" "Return to home page"
-            , attribute "raised" ""
-            , onClick <| Parent GoHome
+        , a
+            [ class "not-found-page__link"
+            , href "/"
             ]
-            []
+            [ node "custom-mwc-button"
+                [ attribute "label" "Return to home page"
+                , attribute "raised" ""
+                ]
+                []
+            ]
         ]

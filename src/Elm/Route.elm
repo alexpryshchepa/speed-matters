@@ -21,7 +21,9 @@ import Elm.Page.RunningTime as RunningTimePage
 import Elm.Page.SwimmingDistance as SwimmingDistancePage
 import Elm.Page.SwimmingPace as SwimmingPacePage
 import Elm.Page.SwimmingTime as SwimmingTimePage
+import Elm.Port as Port
 import Elm.Util.Cmd as CmdUtil
+import Elm.Util.Dom as DomUtil
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -72,7 +74,8 @@ type alias Model =
 
 
 type InternalMsg
-    = OpenNav
+    = NoOp
+    | OpenNav
     | CloseNav
     | NotFoundMsg NotFoundPage.Msg
     | HomeMsg HomePage.Msg
@@ -177,6 +180,8 @@ init url =
       }
     , Cmd.batch
         [ Process.sleep 100 |> Task.perform (\_ -> Self ShowContent)
+        , DomUtil.scrollTop "content" <| Self NoOp
+        , Port.pageInitialized ( url.path, getPageDescription route )
         , case route of
             RunningPace ->
                 Cmd.map (Self << RunningPaceMsg) runningPaceCmd
@@ -232,6 +237,11 @@ parser =
 update : InternalMsg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            ( model
+            , Cmd.none
+            )
+
         OpenNav ->
             ( { model | nav = True }
             , Cmd.none
@@ -242,11 +252,9 @@ update msg model =
             , Cmd.none
             )
 
-        NotFoundMsg (NotFoundPage.Parent subMsg) ->
+        NotFoundMsg subMsg ->
             ( model
-            , case subMsg of
-                NotFoundPage.GoHome ->
-                    CmdUtil.fire (Parent << ChangePage <| "/")
+            , Cmd.none
             )
 
         HomeMsg subMsg ->
@@ -569,6 +577,50 @@ routeFromContent content =
 
         ContactModel _ ->
             Contact
+
+
+getPageDescription : Route -> String
+getPageDescription route =
+    let
+        default =
+            "Speed Matters app provides various calculators for running, cycling swimming and triathlon. Easily calculate your distance, speed, time or pace."
+    in
+    case route of
+        NotFound ->
+            default
+
+        Home ->
+            default
+
+        RunningPace ->
+            "Calculate running pace. Determine your performance on the half marathon, marathon or any different running distance."
+
+        RunningTime ->
+            "Calculate running time. Determine your performance on the half marathon, marathon or any different running distance."
+
+        RunningDistance ->
+            "Calculate running distance. Determine your performance on the half marathon, marathon or any different running distance."
+
+        CyclingSpeed ->
+            "Calculate cycling speed. Determine your performance on the next training ride or race."
+
+        CyclingTime ->
+            "Calculate cycling time. Determine your performance on the next training ride or race."
+
+        CyclingDistance ->
+            "Calculate cycling distance. Determine your performance on the next training ride or race."
+
+        SwimmingPace ->
+            "Calculate swimming pace. Determine your performance on the next training session in the pool or any open water event."
+
+        SwimmingTime ->
+            "Calculate swimming time. Determine your performance on the next training session in the pool or any open water event."
+
+        SwimmingDistance ->
+            "Calculate swimming distance. Determine your performance on the next training session in the pool or any open water event."
+
+        Contact ->
+            default
 
 
 subscriptions : Model -> Sub Msg
@@ -894,6 +946,7 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                         , a
                             [ href "https://www.flaticon.com/authors/freepik"
                             , attribute "title" "Freepik"
+                            , attribute "rel" "noreferrer"
                             , target "_blank"
                             ]
                             [ text "Freepik" ]
@@ -903,6 +956,7 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                         , a
                             [ href "https://www.flaticon.com/"
                             , attribute "title" "Flaticon"
+                            , attribute "rel" "noreferrer"
                             , target "_blank"
                             ]
                             [ text "www.flaticon.com" ]

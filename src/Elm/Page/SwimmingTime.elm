@@ -521,8 +521,8 @@ view model =
                     Calculate time using our calculator.
                     """
                 ]
-            , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Try to use to" ]
+            , h1 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use swimming time calculator to" ]
             , ul []
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text

@@ -87,7 +87,7 @@ view model =
                 ]
             ]
         , div [ class "home-page__description" ]
-            [ p [ class "mdc-typography mdc-typography--body1" ]
+            [ h1 [ class "mdc-typography mdc-typography--body1" ]
                 [ text
                     """
                     Speed Matters app combines calculators for running, cycling and swimming.

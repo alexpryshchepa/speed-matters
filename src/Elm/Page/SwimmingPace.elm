@@ -521,8 +521,8 @@ view model =
                     and professionals swim faster than 1 minute 30 seconds.
                     """
                 ]
-            , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Try to use to" ]
+            , h1 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use swimming pace calculator to" ]
             , ul []
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text

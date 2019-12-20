@@ -39,7 +39,7 @@ view : Model -> Html Msg
 view model =
     div [ class "contact-page" ]
         [ div [ class "contact-page__content" ]
-            [ h2 [ class "mdc-typography mdc-typography--headline4" ] [ text "Contact us" ]
+            [ h1 [ class "mdc-typography mdc-typography--headline4" ] [ text "Contact us" ]
             , p [ class "mdc-typography mdc-typography--body1" ]
                 [ text
                     """

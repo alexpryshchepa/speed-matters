@@ -495,8 +495,8 @@ view model =
                     it will be a group race or a cycling part of Ironman.
                     """
                 ]
-            , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Try to use to" ]
+            , h1 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use cycling time calculator to" ]
             , ul []
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text

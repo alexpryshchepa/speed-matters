@@ -516,8 +516,8 @@ view model =
                     Elite runners can run the distance in about 2 hours.
                     """
                 ]
-            , h2 [ class "mdc-typography mdc-typography--headline4" ]
-                [ text "Try to use to" ]
+            , h1 [ class "mdc-typography mdc-typography--headline4" ]
+                [ text "Try to use running time calculator to" ]
             , ul []
                 [ li [ class "mdc-typography mdc-typography--body1" ]
                     [ text
