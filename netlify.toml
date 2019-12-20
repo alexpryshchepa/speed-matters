@@ -2,9 +2,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-[[redirects]]
-  from = "https://spdmttrs.netlify.com/*"
-  to = "https://spdmttrs.com/:splat"
-  status = 301
-

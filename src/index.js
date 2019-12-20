@@ -56,6 +56,21 @@ app.ports.pageInitialized.subscribe(data => {
       document.head.appendChild(meta);
     }
   }
+
+  if (pageDescription.length) {
+    let url = `https://spdmttrs.com${pagePath}`;
+    const canonicalLink = document.head.querySelector('[rel=canonical][href]');
+
+    if (canonicalLink) {
+      canonicalLink.href = url;
+    } else {
+      const link = document.createElement('link');
+      link.rel = 'canonical';
+      link.href = url;
+
+      document.head.appendChild(link);
+    }
+  }
 });
 
 // If you want your app to work offline and load faster, you can change
