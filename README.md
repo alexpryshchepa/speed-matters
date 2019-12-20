@@ -1,6 +1,10 @@
 # Speed Matters
 
-Most usable sport calculators in one place
+[![Netlify Status](https://api.netlify.com/api/v1/badges/343949de-e1b8-44d6-9ed5-4d2883a08aee/deploy-status)](https://app.netlify.com/sites/spdmttrs/deploys)
+
+Various sport calculators
+
+[Link to live](https://spdmttrs.com/)
 
 ## Table of Contents
 
