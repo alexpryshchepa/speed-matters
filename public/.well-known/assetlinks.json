@@ -1,0 +1,9 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.spdmttrs",
+    "sha256_cert_fingerprints":
+    ["48:44:C4:43:74:8E:21:B3:51:39:24:4C:52:A3:E8:8C:EF:C5:7F:C2:33:92:1A:AB:8F:39:2E:89:31:C5:77:E7"]
+  }
+}]
