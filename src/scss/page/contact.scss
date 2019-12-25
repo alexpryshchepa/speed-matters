@@ -1,12 +1,12 @@
 .contact-page {
   $p: &;
 
+  flex: 1 0 auto;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   padding: 48px;
   background-color: rgba($primary-light-color, .5);
-  height: 100%;
 
   @include tablet {
     padding: 24px;
