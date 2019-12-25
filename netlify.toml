@@ -1,4 +1,10 @@
 [[redirects]]
+  from = "https://spdmttrs.netlify.com/*"
+  to = "https://spdmttrs.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
