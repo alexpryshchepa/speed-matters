@@ -886,7 +886,7 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                 [ h4 [ class "route__group-title" ]
                     [ text "Cycling" ]
                 , div [ class "route__group-links" ]
-                    [ viewLink "/cycling/speed" "Speed" "speed" False
+                    [ viewLink "/cycling/speed" "Speed" "slow_motion_video" False
                     , viewLink "/cycling/time" "Time" "access_time" False
                     , viewLink "/cycling/distance" "Distance" "trending_flat" False
                     ]
