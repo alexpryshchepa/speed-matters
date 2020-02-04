@@ -938,7 +938,7 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
                     ]
                     [ pageHtml ]
                 , footer [ class "route__footer mdc-typography--body2" ]
-                    [ text "Copyright © 2019 Alex Pryshchepa. All right reserved."
+                    [ text "Copyright © 2020 Alex Pryshchepa. All right reserved."
                     , text " "
                     , span []
                         [ text "Icons made by"
