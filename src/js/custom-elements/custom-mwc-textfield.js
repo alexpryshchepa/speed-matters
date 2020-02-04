@@ -19,22 +19,23 @@ class CustomTextField extends TextField {
       const input = this.shadowRoot.querySelector('.mdc-text-field__input');
 
       // Get initial input padding right
-      const inputPaddingRight = parseInt(window
-        .getComputedStyle(input, null)
-        .getPropertyValue('padding-right'));
+      const inputPaddingRight = parseInt(
+        window.getComputedStyle(input, null).getPropertyValue('padding-right')
+      );
 
       // Create container for unit value
       const unit = document.createElement('div');
       unit.className = 'mdc-text-field__unit';
-      unit.style.cssText = `
+      unit.style.cssText =
+        `
         position: absolute;
         top: 0;
         right: ${inputPaddingRight}px;
         bottom: 0;
         display: flex;
         align-items: center;
-      ` + /* Copied from mdc-text-field__input to match text style and alignment */
-      `
+      ` /* Copied from mdc-text-field__input to match text style and alignment */ +
+        `
         padding: 12px 6px 14px 8px;
         font-family: Roboto, sans-serif;
         -webkit-font-smoothing: antialiased;
@@ -47,9 +48,10 @@ class CustomTextField extends TextField {
 
       // Append unit container to dom
       field.appendChild(unit);
-      
+
       // Set initial input padding considering unit container width
-      input.style.paddingRight = `${parseInt(inputPaddingRight) + unit.offsetWidth}px`;
+      input.style.paddingRight = `${parseInt(inputPaddingRight) +
+        unit.offsetWidth}px`;
     }
   }
 
@@ -58,15 +60,16 @@ class CustomTextField extends TextField {
     const unit = this.shadowRoot.querySelector('.mdc-text-field__unit');
 
     if (input && unit) {
-      const inputPaddingRight = parseInt(window
-        .getComputedStyle(input, null)
-        .getPropertyValue('padding-right'));
+      const inputPaddingRight = parseInt(
+        window.getComputedStyle(input, null).getPropertyValue('padding-right')
+      );
 
       const plainInputPaddingRight = inputPaddingRight - unit.offsetWidth;
 
       unit.innerText = value;
 
-      input.style.paddingRight = `${plainInputPaddingRight + unit.offsetWidth}px`;
+      input.style.paddingRight = `${plainInputPaddingRight +
+        unit.offsetWidth}px`;
     }
   }
 
@@ -79,24 +82,25 @@ class CustomTextField extends TextField {
 
         this.reportValidity();
       }
-    }
+    };
 
     this.shadowRoot.addEventListener('click', deleteCallback);
     this.shadowRoot.addEventListener('touchstart', deleteCallback);
 
     this.validityTransform = (value, _) => {
-      const isValid = !value.length || new RegExp(this.getAttribute('regex')).test(value);
+      const isValid =
+        !value.length || new RegExp(this.getAttribute('regex')).test(value);
 
       const validatedEvent = new CustomEvent('MDCTextfield:validated', {
-        detail: isValid
+        detail: isValid,
       });
       this.dispatchEvent(validatedEvent);
-      
+
       return {
         valid: isValid,
         patternMismatch: !isValid,
       };
-    }
+    };
   }
 
   firstUpdated() {
@@ -111,12 +115,13 @@ class CustomTextField extends TextField {
         text-align: right !important;
       }
 
-      ${icon && icon.innerText === 'delete'
-        ? `.mdc-text-field__icon {
+      ${
+        icon && icon.innerText === 'delete'
+          ? `.mdc-text-field__icon {
             cursor: pointer !important;
             pointer-events: all !important;
           }`
-        : ''
+          : ''
       }
     `;
 
@@ -135,10 +140,7 @@ class CustomTextField extends TextField {
       this.updateUnitValue(newValue);
     }
 
-    if (
-      name === 'value'
-      && oldValue !== newValue
-    ) {
+    if (name === 'value' && oldValue !== newValue) {
       !this._validity.valid && this.reportValidity();
     }
   }

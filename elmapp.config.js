@@ -11,12 +11,12 @@ module.exports = {
           options: {
             sassOptions: {
               includePaths: ['./node_modules'],
-            }
+            },
           },
-        }
+        },
       ],
     });
 
     return config;
-  }
-}
+  },
+};

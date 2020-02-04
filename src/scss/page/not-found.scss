@@ -1,18 +1,18 @@
 .not-found-page {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-    padding: 24px;
-    overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  padding: 24px;
+  overflow: auto;
 
-    &__icon {
-      font-size: 5rem;
-    }
+  &__icon {
+    font-size: 5rem;
+  }
 
-    &__link {
-      text-decoration: none;
-    }
+  &__link {
+    text-decoration: none;
+  }
 }

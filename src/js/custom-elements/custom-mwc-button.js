@@ -5,7 +5,7 @@ class CustomButton extends Button {
     super.firstUpdated();
 
     const style_ = document.createElement('style');
-    
+
     // Some fixes for component styling as mwc is still in beta
     style_.innerHTML = `
       .mdc-button {

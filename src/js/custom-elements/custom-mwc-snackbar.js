@@ -4,7 +4,7 @@ class CustomSnackbar extends Snackbar {
   static get observedAttributes() {
     return [...Snackbar.observedAttributes, 'open'];
   }
-  
+
   attributeChangedCallback(name, oldValue, newValue) {
     super.attributeChangedCallback(name, oldValue, newValue);
 
@@ -16,10 +16,7 @@ class CustomSnackbar extends Snackbar {
       }
     }
 
-    if (
-      name === 'labeltext'
-      && this.getAttribute('open') === 'true'
-    ) {
+    if (name === 'labeltext' && this.getAttribute('open') === 'true') {
       this.open();
     }
   }

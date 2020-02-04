@@ -26,7 +26,7 @@
     font-weight: $thin-font-weight;
     text-decoration: none;
     color: $secondary-text-color;
-    transition: color .2s ease-out;
+    transition: color 0.2s ease-out;
 
     & > i {
       margin-right: 12px;
@@ -80,7 +80,7 @@
     opacity: 0;
 
     &.is-visible {
-      transition: opacity .4s ease-out;
+      transition: opacity 0.4s ease-out;
       opacity: 1;
     }
   }

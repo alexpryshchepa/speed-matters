@@ -4,7 +4,7 @@
   display: flex;
   flex-wrap: wrap;
   overflow: hidden;
-  
+
   &::after {
     content: '';
     position: absolute;
@@ -17,7 +17,7 @@
     background-image: url('/images/icons/ranking.svg');
     background-position: center bottom;
     background-size: contain;
-    opacity: .1;
+    opacity: 0.1;
   }
 
   @include tablet {
@@ -39,7 +39,7 @@
 
     &-right {
       flex: 1;
-      
+
       @include tablet {
         display: none;
       }

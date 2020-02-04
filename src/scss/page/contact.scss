@@ -6,7 +6,7 @@
   flex-wrap: wrap;
   align-items: center;
   padding: 48px;
-  background-color: rgba($primary-light-color, .5);
+  background-color: rgba($primary-light-color, 0.5);
 
   @include tablet {
     padding: 24px;
@@ -52,10 +52,8 @@
 
   &__button {
     will-change: transform;
-    transition:
-      transform .2s ease-out,
-      opacity .2s ease-out,
-      visibility .2s ease-out;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out,
+      visibility 0.2s ease-out;
   }
 
   &__email {
@@ -68,10 +66,8 @@
     will-change: transform;
     visibility: hidden;
 
-    transition:
-      transform .2s ease-out,
-      opacity .2s ease-out,
-      visibility .2s ease-out;
+    transition: transform 0.2s ease-out, opacity 0.2s ease-out,
+      visibility 0.2s ease-out;
   }
 
   &__contact {
