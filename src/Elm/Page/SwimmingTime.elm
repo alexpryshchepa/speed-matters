@@ -381,28 +381,28 @@ calculate distance pace =
         ( Just d, Just p ) ->
             case ( distance.unit, pace.unit ) of
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.Per100Meters ) ->
-                    CalculationSuccess <| CalculatorService.time (toFloat (CalculatorService.kmToM d) / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (toFloat (CalculatorService.kmToM d) / 100) p
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.Per100Meters ) ->
-                    CalculationSuccess <| CalculatorService.time (d / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (d / 100) p
 
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.Per100Yards ) ->
-                    CalculationSuccess <| CalculatorService.time (toFloat (CalculatorService.kmToYd d) / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (toFloat (CalculatorService.kmToYd d) / 100) p
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.Per100Yards ) ->
-                    CalculationSuccess <| CalculatorService.time (toFloat (CalculatorService.mToYd (round d)) / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (toFloat (CalculatorService.mToYd (round d)) / 100) p
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.Per100Yards ) ->
-                    CalculationSuccess <| CalculatorService.time (toFloat (CalculatorService.miToYd d) / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (toFloat (CalculatorService.miToYd d) / 100) p
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.Per100Meters ) ->
-                    CalculationSuccess <| CalculatorService.time (toFloat (CalculatorService.miToM d) / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (toFloat (CalculatorService.miToM d) / 100) p
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.Per100Yards ) ->
-                    CalculationSuccess <| CalculatorService.time (d / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (d / 100) p
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.Per100Meters ) ->
-                    CalculationSuccess <| CalculatorService.time (toFloat (CalculatorService.ydToM (round d)) / 100) p
+                    CalculationSuccess <| CalculatorService.timeByPace (toFloat (CalculatorService.ydToM (round d)) / 100) p
 
                 _ ->
                     CalculationError ValidatorService.unhandledException

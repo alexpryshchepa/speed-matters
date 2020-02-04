@@ -381,16 +381,16 @@ calculate distance speed =
         ( Just d, Just s ) ->
             case ( distance.unit, speed.unit ) of
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Speed UnitService.KilometersPerHour ) ->
-                    CalculationSuccess <| round (3600 * CalculatorService.time2 d s)
+                    CalculationSuccess <| round (3600 * CalculatorService.timeBySpeed d s)
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Speed UnitService.MilesPerHour ) ->
-                    CalculationSuccess <| round (3600 * CalculatorService.time2 d s)
+                    CalculationSuccess <| round (3600 * CalculatorService.timeBySpeed d s)
 
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Speed UnitService.MilesPerHour ) ->
-                    CalculationSuccess <| round (3600 * CalculatorService.time2 d (CalculatorService.miPerHToKmPerH s))
+                    CalculationSuccess <| round (3600 * CalculatorService.timeBySpeed d (CalculatorService.miPerHToKmPerH s))
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Speed UnitService.KilometersPerHour ) ->
-                    CalculationSuccess <| round (3600 * CalculatorService.time2 d (CalculatorService.kmPerHToMiPerH s))
+                    CalculationSuccess <| round (3600 * CalculatorService.timeBySpeed d (CalculatorService.kmPerHToMiPerH s))
 
                 _ ->
                     CalculationError ValidatorService.unhandledException

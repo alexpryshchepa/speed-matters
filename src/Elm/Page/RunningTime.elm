@@ -379,28 +379,28 @@ calculate distance pace =
         ( Just d, Just p ) ->
             case ( distance.unit, pace.unit ) of
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.time d p
+                    CalculationSuccess <| CalculatorService.timeByPace d p
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.time (CalculatorService.mToKm (round d)) p
+                    CalculationSuccess <| CalculatorService.timeByPace (CalculatorService.mToKm (round d)) p
 
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.time (CalculatorService.kmToMi d) p
+                    CalculationSuccess <| CalculatorService.timeByPace (CalculatorService.kmToMi d) p
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.time (CalculatorService.mToMi (round d)) p
+                    CalculationSuccess <| CalculatorService.timeByPace (CalculatorService.mToMi (round d)) p
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.time d p
+                    CalculationSuccess <| CalculatorService.timeByPace d p
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.time (CalculatorService.miToKm d) p
+                    CalculationSuccess <| CalculatorService.timeByPace (CalculatorService.miToKm d) p
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.time (CalculatorService.ydToMi (round d)) p
+                    CalculationSuccess <| CalculatorService.timeByPace (CalculatorService.ydToMi (round d)) p
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.time (CalculatorService.ydToKm (round d)) p
+                    CalculationSuccess <| CalculatorService.timeByPace (CalculatorService.ydToKm (round d)) p
 
                 _ ->
                     CalculationError ValidatorService.unhandledException

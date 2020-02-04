@@ -382,28 +382,28 @@ calculate time pace result =
         ( Just t, Just p ) ->
             case ( result.unit, pace.unit ) of
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.distance t p
+                    CalculationSuccess <| CalculatorService.distanceByPace t p
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.kmToM (CalculatorService.distance t p))
+                    CalculationSuccess <| toFloat (CalculatorService.kmToM (CalculatorService.distanceByPace t p))
 
                 ( UnitService.Distance UnitService.Kilometer, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.miToKm (CalculatorService.distance t p)
+                    CalculationSuccess <| CalculatorService.miToKm (CalculatorService.distanceByPace t p)
 
                 ( UnitService.Distance UnitService.Meter, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.miToM (CalculatorService.distance t p))
+                    CalculationSuccess <| toFloat (CalculatorService.miToM (CalculatorService.distanceByPace t p))
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| CalculatorService.distance t p
+                    CalculationSuccess <| CalculatorService.distanceByPace t p
 
                 ( UnitService.Distance UnitService.Mile, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| CalculatorService.kmToMi (CalculatorService.distance t p)
+                    CalculationSuccess <| CalculatorService.kmToMi (CalculatorService.distanceByPace t p)
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerMile ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.miToYd (CalculatorService.distance t p))
+                    CalculationSuccess <| toFloat (CalculatorService.miToYd (CalculatorService.distanceByPace t p))
 
                 ( UnitService.Distance UnitService.Yard, UnitService.Pace UnitService.PerKilometer ) ->
-                    CalculationSuccess <| toFloat (CalculatorService.kmToYd (CalculatorService.distance t p))
+                    CalculationSuccess <| toFloat (CalculatorService.kmToYd (CalculatorService.distanceByPace t p))
 
                 _ ->
                     CalculationError ValidatorService.unhandledException

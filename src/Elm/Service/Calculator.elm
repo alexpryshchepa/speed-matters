@@ -1,6 +1,6 @@
 module Elm.Service.Calculator exposing
-    ( distance
-    , distance2
+    ( distanceByPace
+    , distanceBySpeed
     , hToMin
     , hToSec
     , kmPerHToMiPerH
@@ -25,8 +25,8 @@ module Elm.Service.Calculator exposing
     , secToH
     , secToMin
     , speed
-    , time
-    , time2
+    , timeByPace
+    , timeBySpeed
     , ydToKm
     , ydToM
     , ydToMi
@@ -111,8 +111,8 @@ ydToM yd =
     round <| toFloat yd / 1.093613
 
 
-distance : Int -> Int -> Float
-distance timeSec paceSec =
+distanceByPace : Int -> Int -> Float
+distanceByPace timeSec paceSec =
     if paceSec <= 0 then
         0
 
@@ -121,8 +121,8 @@ distance timeSec paceSec =
             |> roundTo 1000
 
 
-distance2 : Float -> Float -> Float
-distance2 t s =
+distanceBySpeed : Float -> Float -> Float
+distanceBySpeed t s =
     t * s
         |> roundTo 1000
 
@@ -161,13 +161,13 @@ secToMin sec =
     toFloat sec / 60
 
 
-time : Float -> Int -> Int
-time d sec =
+timeByPace : Float -> Int -> Int
+timeByPace d sec =
     floor <| d * toFloat sec
 
 
-time2 : Float -> Float -> Float
-time2 d s =
+timeBySpeed : Float -> Float -> Float
+timeBySpeed d s =
     d / s
 
 
