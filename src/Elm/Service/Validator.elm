@@ -27,18 +27,19 @@ import Regex
 import String.Extra as StringExtra
 
 
+intRegex : String
 intRegex =
     "^\\d+$"
 
-
+floatRegex : String
 floatRegex =
     "^\\d+(\\.\\d+)?$"
 
-
+timeRegex : String
 timeRegex =
     "^(\\d+):[0-5][0-9]:[0-5][0-9]$"
 
-
+paceRegex : String
 paceRegex =
     "^(\\d+):[0-5][0-9]$"
 

@@ -110,7 +110,7 @@ view { title, units } model =
                 [] ->
                     text ""
 
-                xs ->
+                _ ->
                     div [ class "result-element__scroller" ]
                         (List.map
                             (\u ->

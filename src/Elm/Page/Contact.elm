@@ -11,9 +11,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 
 
-type alias Model =
-    { email : String
-    }
+type alias Model = String
 
 
 type Msg
@@ -21,16 +19,14 @@ type Msg
 
 
 init : Model
-init =
-    { email = ""
-    }
+init = ""
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update msg _ =
     case msg of
         ShowEmail ->
-            ( { model | email = "spdmttrs@gmail.com" }
+            ( "spdmttrs@gmail.com"
             , Cmd.none
             )
 
@@ -62,7 +58,7 @@ view model =
                 ]
             , div
                 [ class "contact-page__contact"
-                , classList [ ( "is-visible", not <| String.isEmpty model.email ) ]
+                , classList [ ( "is-visible", not <| String.isEmpty model ) ]
                 ]
                 [ node "custom-mwc-button"
                     [ class "contact-page__button"
@@ -74,9 +70,9 @@ view model =
                     []
                 , a
                     [ class "contact-page__email mdc-typography mdc-typography--body1"
-                    , href ("mailto:" ++ model.email)
+                    , href ("mailto:" ++ model)
                     ]
-                    [ text model.email ]
+                    [ text model ]
                 ]
             ]
         , div [ class "contact-page__image" ]

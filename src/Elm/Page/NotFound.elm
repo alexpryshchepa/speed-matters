@@ -25,14 +25,14 @@ init =
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update _ model =
     ( model
     , Cmd.none
     )
 
 
 view : Model -> Html Msg
-view model =
+view _ =
     div [ class "not-found-page" ]
         [ i [ class "not-found-page__icon material-icons" ]
             [ text "image_search" ]

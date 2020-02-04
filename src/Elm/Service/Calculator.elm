@@ -35,7 +35,7 @@ module Elm.Service.Calculator exposing
 
 roundTo : Int -> Float -> Float
 roundTo to num =
-    ((*) num (toFloat to)
+    (num * toFloat to
         |> round
         |> toFloat
     )
@@ -48,67 +48,67 @@ roundTo to num =
 
 kmToMi : Float -> Float
 kmToMi km =
-    (/) km 1.60934
+    km / 1.60934
         |> roundTo 1000
 
 
 kmToM : Float -> Int
 kmToM km =
-    round <| (*) km 1000
+    round <| km * 1000
 
 
 kmToYd : Float -> Int
 kmToYd km =
-    round <| (*) km 1093.613
+    round <| km * 1093.613
 
 
 mToMi : Int -> Float
 mToMi m =
-    (/) (toFloat m) 1609.34
+    toFloat m / 1609.34
         |> roundTo 1000
 
 
 mToKm : Int -> Float
 mToKm m =
-    (/) (toFloat m) 1000
+    toFloat m / 1000
 
 
 mToYd : Int -> Int
 mToYd m =
-    round <| (*) (toFloat m) 1.093613
+    round <| toFloat m * 1.093613
 
 
 miToKm : Float -> Float
 miToKm mi =
-    (*) mi 1.60934
+    mi * 1.60934
         |> roundTo 1000
 
 
 miToM : Float -> Int
 miToM mi =
-    round <| (*) mi 1609.34
+    round <| mi * 1609.34
 
 
 miToYd : Float -> Int
 miToYd mi =
-    round <| (*) mi 1760
+    round <| mi * 1760
 
 
 ydToMi : Int -> Float
 ydToMi yd =
-    (/) (toFloat yd) 1760
+    toFloat yd / 1760
         |> roundTo 1000
 
 
 ydToKm : Int -> Float
 ydToKm yd =
-    (/) (toFloat yd) 1093.613
+    toFloat yd / 1093.613
         |> roundTo 1000
 
 
 ydToM : Int -> Int
 ydToM yd =
-    round <| (/) (toFloat yd) 1.093613
+    round <| toFloat yd / 1.093613
 
 
 distance : Int -> Int -> Float
@@ -117,13 +117,13 @@ distance timeSec paceSec =
         0
 
     else
-        (/) (toFloat timeSec) (toFloat paceSec)
+        toFloat timeSec / toFloat paceSec
             |> roundTo 1000
 
 
 distance2 : Float -> Float -> Float
 distance2 t s =
-    (*) t s
+    t * s
         |> roundTo 1000
 
 
@@ -143,7 +143,7 @@ hToSec =
 
 minToH : Float -> Float
 minToH min =
-    (/) min 60
+    min / 60
 
 
 minToSec : Int -> Int
@@ -153,22 +153,22 @@ minToSec =
 
 secToH : Int -> Float
 secToH sec =
-    (/) (toFloat sec) 3600
+    toFloat sec / 3600
 
 
 secToMin : Int -> Float
 secToMin sec =
-    (/) (toFloat sec) 60
+    toFloat sec / 60
 
 
 time : Float -> Int -> Int
 time d sec =
-    floor <| (*) d (toFloat sec)
+    floor <| d * toFloat sec
 
 
 time2 : Float -> Float -> Float
 time2 d s =
-    (/) d s
+    d / s
 
 
 
@@ -177,22 +177,22 @@ time2 d s =
 
 secPerKmToSecPerMi : Int -> Int
 secPerKmToSecPerMi sec =
-    round <| (*) (toFloat sec) 1.60934
+    round <| toFloat sec * 1.60934
 
 
 secPerMiToSecPerKm : Int -> Int
 secPerMiToSecPerKm sec =
-    round <| (/) (toFloat sec) 1.60934
+    round <| toFloat sec / 1.60934
 
 
 secPerYdToSecPerM : Int -> Int
 secPerYdToSecPerM sec =
-    round <| (*) (toFloat sec) 1.093613
+    round <| toFloat sec * 1.093613
 
 
 secPerMToSecPerYd : Int -> Int
 secPerMToSecPerYd sec =
-    round <| (/) (toFloat sec) 1.093613
+    round <| toFloat sec / 1.093613
 
 
 pace : Int -> Float -> Int
@@ -201,7 +201,7 @@ pace sec d =
         0
 
     else
-        floor <| (/) (toFloat sec) d
+        floor <| toFloat sec / d
 
 
 
@@ -210,13 +210,13 @@ pace sec d =
 
 kmPerHToMiPerH : Float -> Float
 kmPerHToMiPerH kmh =
-    (/) kmh 1.60934
+    kmh / 1.60934
         |> roundTo 10
 
 
 miPerHToKmPerH : Float -> Float
 miPerHToKmPerH mph =
-    (*) mph 1.60934
+    mph * 1.60934
         |> roundTo 10
 
 
@@ -226,5 +226,5 @@ speed d t =
         0
 
     else
-        (/) d t
+        d / t
             |> roundTo 10

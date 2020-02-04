@@ -9,13 +9,11 @@ module Elm.Element.Input exposing
     )
 
 import Elm.Service.Unit as UnitService
-import Elm.Service.Validator as ValidatorService
 import Elm.Util.Cmd as CmdUtil
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Json.Decode as Decode
-import Task
 
 
 type alias Model =
@@ -180,10 +178,10 @@ view { name, units, links } model =
             [] ->
                 text ""
 
-            [ x ] ->
+            [ _ ] ->
                 text ""
 
-            xs ->
+            _ ->
                 div [ class "input-element__scroller" ]
                     (List.map
                         (\u ->
@@ -198,7 +196,7 @@ view { name, units, links } model =
             [] ->
                 text ""
 
-            xs ->
+            _ ->
                 div [ class "input-element__scroller" ]
                     (List.map viewLink links)
         ]

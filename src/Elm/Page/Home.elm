@@ -40,7 +40,7 @@ update msg model =
 
 
 view : Model -> Html Msg
-view model =
+view _ =
     div [ class "home-page" ]
         [ div [ class "home-page__cards" ]
             [ viewCard

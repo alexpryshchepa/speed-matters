@@ -17,7 +17,7 @@ timeToSec value =
             [ Just h, Just min, Just sec ] ->
                 Just <| CalculatorService.hToSec h + CalculatorService.minToSec min + sec
 
-            xs ->
+            _ ->
                 Nothing
 
     else
@@ -31,7 +31,7 @@ timeToHour value =
             [ Just h, Just min, Just sec ] ->
                 Just <| toFloat h + CalculatorService.minToH (toFloat min) + CalculatorService.secToH sec
 
-            xs ->
+            _ ->
                 Nothing
 
     else
@@ -68,9 +68,9 @@ paceToSec value =
     if ValidatorService.isPace value then
         case String.split ":" value |> List.map String.toInt of
             [ Just min, Just sec ] ->
-                Just <| (+) (CalculatorService.minToSec min) sec
+                Just <| CalculatorService.minToSec min + sec
 
-            xs ->
+            _ ->
                 Nothing
 
     else

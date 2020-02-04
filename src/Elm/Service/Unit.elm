@@ -13,7 +13,6 @@ import Basics.Extra as BasicsExtra
 import Elm.Service.Calculator as CalculatorService
 import Elm.Service.Converter as ConverterService
 import Maybe.Extra as MaybeExtra
-import Regex
 
 
 type Unit
@@ -278,30 +277,31 @@ convertSpeed from to value =
 
 isSafeFloat : Maybe Float -> Maybe Float
 isSafeFloat num =
-    case num of
-        Just float ->
-            if BasicsExtra.isSafeInteger <| floor float then
-                num
+    num
+      |> Maybe.map
+          (\float ->
+              if BasicsExtra.isSafeInteger <| floor float then
+                  num
 
-            else
-                Nothing
+              else
+                  Nothing
+          )
+      |> Maybe.withDefault Nothing
 
-        Nothing ->
-            Nothing
 
 
 isSafeInteger : Maybe Int -> Maybe Int
 isSafeInteger num =
-    case num of
-        Just integer ->
-            if BasicsExtra.isSafeInteger integer then
-                num
+    num
+      |> Maybe.map
+          (\integer ->
+              if BasicsExtra.isSafeInteger integer then
+                  num
 
-            else
-                Nothing
-
-        Nothing ->
-            Nothing
+              else
+                  Nothing
+          )
+      |> Maybe.withDefault Nothing
 
 
 convertationResult : Maybe String -> Convertation

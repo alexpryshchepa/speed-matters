@@ -252,7 +252,7 @@ update msg model =
             , Cmd.none
             )
 
-        NotFoundMsg subMsg ->
+        NotFoundMsg _ ->
             ( model
             , Cmd.none
             )
@@ -855,12 +855,11 @@ viewNav { nav, return, snackbar, content, visible } title pageHtml =
          , type_ "modal"
          , on "MDCDrawer:closed" (Decode.succeed (Self CloseNav))
          ]
-            ++ (case nav of
-                    True ->
-                        [ attribute "open" "" ]
-
-                    False ->
-                        []
+            ++ (if nav then
+                    [ attribute "open" "" ]
+                        
+                else
+                    []
                )
         )
         [ span [ attribute "slot" "title" ]

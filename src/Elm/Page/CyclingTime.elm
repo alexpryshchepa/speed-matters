@@ -134,7 +134,7 @@ update msg model =
                     , CmdUtil.fire <| (Parent << ShowSnackbar) message
                     )
 
-                InputElement.ValueChanged old new ->
+                InputElement.ValueChanged _ _ ->
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
@@ -178,7 +178,7 @@ update msg model =
                     , CmdUtil.fire <| (Parent << ShowSnackbar) message
                     )
 
-                InputElement.ValueChanged old new ->
+                InputElement.ValueChanged _ _ ->
                     if model.isCalculated then
                         ( { model
                             | isCalculated = False
@@ -306,7 +306,7 @@ update msg model =
                 decodeStorage =
                     Decode.decodeValue storageDecoder value
 
-                { distance, speed, result } =
+                { distance, speed } =
                     model
             in
             case decodeStorage of
@@ -400,7 +400,7 @@ calculate distance speed =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Port.responseFromLocalStorage (Self << LocalStorageResponse)
 
 
